@@ -1,6 +1,14 @@
 import './FilterSidebar.css';
 
-const FilterSidebar = () => {
+interface FilterSidebarProps {
+  selectedMajors: string[];
+  selectedYears: number[];
+  onMajorChange: (majors: string[]) => void;
+  onYearChange: (years: number[]) => void;
+}
+
+const FilterSidebar = ({ selectedMajors, selectedYears, onMajorChange, onYearChange }: FilterSidebarProps) => {
+
   const years = ['2025', '2026', '2027', '2028'];
   const majors = [
     'Computer Science',

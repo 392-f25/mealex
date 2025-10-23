@@ -1,8 +1,12 @@
 import ProfileCard from './components/ProfileCard.tsx'
 import FilterSidebar from './components/FilterSidebar.tsx';
 import './App.css';
+import { useState } from 'react';
 
 export default function App() {
+
+  const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
+  const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const profiles = [
     {
       id: 1,
