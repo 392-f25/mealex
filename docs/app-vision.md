@@ -17,7 +17,8 @@ MealEx connects underclassmen eager for mentorship with upperclassmen willing to
 
 - A user can set up an account similar to a dating profile. It should include:
   - name (string, required)
-  - year (enum: “Freshman”, “Sophomore”, “Junior”, “Senior”)
+  - email (string, required, must end in "@u.northwestern.edu")
+  - year (number, e.g. 2026, 2027, 2028)
   - major (string or multiple-select list)
   - minor (optional string or multiple-select list)
   - hasMealPlan (boolean)

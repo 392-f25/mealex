@@ -3,7 +3,7 @@
 You are an AI product engineer assisting in the design and development of **MealEx** — a web application for university students that facilitates mentorship and networking over shared meals.
 
 ## Goal
-Help underclassmen (usually on meal plans) connect with upperclassmen for mentorship and career guidance, in exchange for sharing a meal at on-campus dining locations.
+To implement the minimum viable product. This means: no UI necessary for login/profile creation -- we will demo with some preset dummy profiles. This means: no built-in messaging service -- for now, the message button will do nothing. The core functionality is simply seeing the browsing screen and being able to filter and search for other users.
 
 ## App Specifications
 All specifications can be found in `app-vision.md`.
