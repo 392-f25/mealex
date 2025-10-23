@@ -1,3 +1,4 @@
+import ProfileCard from './components/ProfileCard.tsx'
 export default function App() {
   const profiles = [
     {
@@ -102,21 +103,7 @@ export default function App() {
               key={profile.id}
               className="flex gap-3 rounded-xl bg-white p-4 shadow-sm transition duration-150 hover:-translate-y-1.5 hover:shadow-md"
             >
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-slate-500 text-center font-bold text-white">
-                {profile.initials}
-              </div>
-              <div className="flex-1">
-                <h3 className="m-0 text-base font-semibold">{profile.name}</h3>
-                <p className="mt-1 text-xs text-slate-600">{profile.major} • {profile.year}</p>
-                <p className="mt-2 text-sm text-gray-700">{profile.bio}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {profile.tags.map(tag => (
-                    <span key={tag} className="rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              <ProfileCard profile={profile}/>
             </article>
           ))}
         </section>
