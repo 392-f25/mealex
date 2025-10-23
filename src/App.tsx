@@ -6,7 +6,7 @@ import { useState } from 'react';
 export default function App() {
 
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
-  const [selectedYears, setSelectedYears] = useState<number[]>([]);
+  const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const profiles = [
     {
       id: 1,
@@ -96,7 +96,7 @@ export default function App() {
       </div>
 
       <div className="main-layout">
-        <FilterSidebar />
+        <FilterSidebar selectedMajors={selectedMajors} setSelectedMajors={setSelectedMajors} selectedYears={selectedYears} setSelectedYears={setSelectedYears} />
         <main className="main-content">
           {/* Main container */}
           <div className="mx-auto max-w-6xl px-5 py-7">
