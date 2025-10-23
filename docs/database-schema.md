@@ -1,0 +1,18 @@
+- A user can set up an account similar to a dating profile. It should include:
+  - name (string, required)
+  - email (string, required, must end in "@u.northwestern.edu")
+  - year (number, e.g. 2026, 2027, 2028)
+  - major (string or multiple-select list)
+  - minor (optional string or multiple-select list)
+  - hasMealPlan (boolean)
+- Optional:
+  - availability (optional list of time ranges, e.g., Mon 12–2 PM)
+  - careerInterests (optional list of strings)
+  - industryExperience (optional free text)
+  - externalLinks (optional dictionary with keys: LinkedIn, GitHub, Website)
+  - Each user can upload a profile photo (optional, JPG/PNG, <2 MB).
+- A user should be able to browse through all other accounts, using the following filters:
+  - Year (multi-select)
+  - Major/Minor
+  - Has Meal Plan (yes/no)
+  - Career Interests
