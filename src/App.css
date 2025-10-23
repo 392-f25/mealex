@@ -68,7 +68,26 @@ body{
 .tag{background:rgba(37,99,235,0.08);color:var(--accent);padding:6px 8px;border-radius:999px;font-size:12px;font-weight:600}
 .notes{margin:26px 0 60px;color:var(--muted);font-size:13px}
 
+.main-layout {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+}
+
 /* Responsive tweaks */
+@media (max-width:768px){
+  .main-layout {
+    flex-direction: column;
+  }
+  .filter-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0; /* slate-200 */
+  }
+}
+
 @media (max-width:560px){
   .topbar{padding:14px}
   .brand .slogan{display:none}

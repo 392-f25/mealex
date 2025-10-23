@@ -1,4 +1,7 @@
 import ProfileCard from './components/ProfileCard.tsx'
+import FilterSidebar from './components/FilterSidebar.tsx';
+import './App.css';
+
 export default function App() {
   const profiles = [
     {
@@ -88,30 +91,35 @@ export default function App() {
         </button>
       </div>
 
-      {/* Main container */}
-      <div className="mx-auto max-w-6xl px-5 py-7">
-        {/* Intro section */}
-        <section className="mb-8">
-          <h2 className="m-0 text-2xl font-semibold">Browse profiles</h2>
-          <p className="mt-1 text-slate-600">Find upperclassmen and peers by major, year, and interests.</p>
-        </section>
+      <div className="main-layout">
+        <FilterSidebar />
+        <main className="main-content">
+          {/* Main container */}
+          <div className="mx-auto max-w-6xl px-5 py-7">
+            {/* Intro section */}
+            <section className="mb-8">
+              <h2 className="m-0 text-2xl font-semibold">Browse profiles</h2>
+              <p className="mt-1 text-slate-600">Find upperclassmen and peers by major, year, and interests.</p>
+            </section>
 
-        {/* Cards grid */}
-        <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {profiles.map(profile => (
-            <article
-              key={profile.id}
-              className="flex gap-3 rounded-xl bg-white p-4 shadow-sm transition duration-150 hover:-translate-y-1.5 hover:shadow-md"
-            >
-              <ProfileCard profile={profile}/>
-            </article>
-          ))}
-        </section>
+            {/* Cards grid */}
+            <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {profiles.map(profile => (
+                <article
+                  key={profile.id}
+                  className="flex gap-3 rounded-xl bg-white p-4 shadow-sm transition duration-150 hover:-translate-y-1.5 hover:shadow-md"
+                >
+                  <ProfileCard profile={profile}/>
+                </article>
+              ))}
+            </section>
 
-        {/* Footer */}
-        <footer className="mt-16 text-xs text-slate-600">
-          <p>Static mock — no functionality. Cards are intended to become reusable React components later.</p>
-        </footer>
+            {/* Footer */}
+            <footer className="mt-16 text-xs text-slate-600">
+              <p>Static mock — no functionality. Cards are intended to become reusable React components later.</p>
+            </footer>
+          </div>
+        </main>
       </div>
     </div>
   );
