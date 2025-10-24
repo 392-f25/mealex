@@ -1,0 +1,76 @@
+"profiles": {
+    {
+      "id": 1,
+      "initials": 'AB',
+      :: 'Alice Brown',
+      major: 'Computer Science',
+      year: '2028',
+      bio: 'Interested in AI research and internships.',
+      tags: ['AI', 'Internships']
+    },
+    {
+      id: 2,
+      initials: 'BM',
+      name: 'Ben Martinez',
+      major: 'Economics',
+      year: '2026',
+      bio: 'Interested in consulting and finance events.',
+      tags: ['Consulting', 'Finance']
+    },
+    {
+      id: 3,
+      initials: 'CK',
+      name: 'Chris Kim',
+      major: 'Electrical Engineering',
+      year: '2027',
+      bio: 'Hardware design and embedded systems.',
+      tags: ['Hardware', 'Embedded']
+    },
+    {
+      id: 4,
+      initials: 'DL',
+      name: 'Dana Lee',
+      major: 'Mathematics',
+      year: '2025',
+      bio: 'Enjoys tutoring and research in applied math.',
+      tags: ['Research', 'Tutoring']
+    },
+    {
+      id: 5,
+      initials: 'ES',
+      name: 'Evan Smith',
+      major: 'Computer Science',
+      year: '2026',
+      bio: 'Full-stack dev, open-source contributor.',
+      tags: ['Full-stack', 'Open-source']
+    },
+    {
+      id: 6,
+      initials: 'FG',
+      name: 'Fiona Green',
+      major: 'Journalism',
+      year: '2028',
+      bio: 'Interested in media, writing, and communications.',
+      tags: ['Media', 'Writing']
+    },
+    {
+      id: 7,
+      initials: 'GT',
+      name: 'George Thompson',
+      major: 'Mechanical Engineering',
+      year: '2025',
+      bio: 'Robotics club lead, loves prototyping.',
+      tags: ['Robotics', 'Prototyping']
+    },
+    {
+      id: 8,
+      initials: 'HL',
+      name: 'Hannah Li',
+      major: 'Biology',
+      year: '2027',
+      bio: 'Lab experience, pre-med track.',
+      tags: ['Lab', 'Pre-med']
+    }
+    }
+}
+}

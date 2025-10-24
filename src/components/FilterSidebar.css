@@ -1,0 +1,31 @@
+.filter-sidebar {
+  width: 280px;
+  padding: 20px;
+  background-color: #f8fafc; /* slate-50 */
+  border-right: 1px solid #e2e8f0; /* slate-200 */
+}
+
+.filter-group {
+  margin-bottom: 24px;
+}
+
+.filter-title {
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.filter-option input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.filter-option label {
+  font-size: 0.875rem; /* text-sm */
+  color: #475569; /* slate-600 */
+}
