@@ -1,12 +1,11 @@
-import ProfileCard from './components/ProfileCard.tsx'
+import ProfileGrid from './components/ProfileGrid.tsx'
 import FilterSidebar from './components/FilterSidebar.tsx';
-import './App.css';
 import { useState } from 'react';
 
 export default function App() {
-
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  
   const profiles = [
     {
       id: 1,
@@ -86,18 +85,24 @@ export default function App() {
     <div className="min-h-screen bg-slate-50">
       {/* Topbar */}
       <div className="sticky top-0 z-10 flex items-center justify-between bg-gradient-to-b from-white to-white/98 px-5 py-5 shadow-sm">
-        <div className="brand">
-          <h1 className="m-0 text-xl font-semibold">University Connect</h1>
-          <p className="m-0 mt-0.5 text-xs text-slate-500">Network with peers</p>
+        <div>
+          <h1 className="m-0 text-xl font-semibold">MealEx</h1>
+          <p className="m-0 mt-0.5 text-xs text-slate-500">Network with peers over meals</p>
         </div>
         <button className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
           Manage
         </button>
       </div>
 
-      <div className="main-layout">
-        <FilterSidebar selectedMajors={selectedMajors} setSelectedMajors={setSelectedMajors} selectedYears={selectedYears} setSelectedYears={setSelectedYears} />
-        <main className="main-content">
+      <div className="flex flex-col md:flex-row">
+        <FilterSidebar 
+          selectedMajors={selectedMajors} 
+          setSelectedMajors={setSelectedMajors} 
+          selectedYears={selectedYears} 
+          setSelectedYears={setSelectedYears} 
+        />
+        
+        <main className="flex-1">
           {/* Main container */}
           <div className="mx-auto max-w-6xl px-5 py-7">
             {/* Intro section */}
@@ -107,20 +112,11 @@ export default function App() {
             </section>
 
             {/* Cards grid */}
-            <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
-              {profiles
-                .filter(profile => selectedMajors.length === 0 || selectedMajors.includes(profile.major))
-                .filter(profile => selectedYears.length === 0 || selectedYears.includes(profile.year))
-                .map(profile => (
-                <article
-                  key={profile.id}
-                  className="flex gap-3 rounded-xl bg-white p-4 shadow-sm transition duration-150 hover:-translate-y-1.5 hover:shadow-md"
-                >
-                  <ProfileCard profile={profile}/>
-                </article>
-              ))}
-            </section>
+            <ProfileGrid
+              selectedMajors={selectedMajors}
+              selectedYears={selectedYears}
+              profiles={profiles}
+            />
 
             {/* Footer */}
             <footer className="mt-16 text-xs text-slate-600">

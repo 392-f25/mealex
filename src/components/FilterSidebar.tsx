@@ -1,4 +1,4 @@
-import './FilterSidebar.css';
+import { useState } from 'react';
 
 interface FilterSidebarProps {
   setSelectedMajors: (majors: string[]) => any;
@@ -8,7 +8,6 @@ interface FilterSidebarProps {
 }
 
 const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, selectedYears }: FilterSidebarProps) => {
-
   const years = ['2025', '2026', '2027', '2028'];
   const majors = [
     'Computer Science',
@@ -37,22 +36,40 @@ const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, se
   };
 
   return (
-    <aside className="filter-sidebar">
-      <div className="filter-group">
-        <h3 className="filter-title">Year</h3>
+    <aside className="w-70 bg-slate-50 border-r border-slate-200 p-5">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-3">Year</h3>
         {years.map((year) => (
-          <div key={year} className="filter-option">
-            <input onChange={() => handleYearChange(year)} checked={selectedYears.includes(year)} type="checkbox" id={`year-${year}`} name={year} />
-            <label htmlFor={`year-${year}`}>{year}</label>
+          <div key={year} className="flex items-center mb-2">
+            <input
+              onChange={() => handleYearChange(year)}
+              checked={selectedYears.includes(year)}
+              type="checkbox"
+              id={`year-${year}`}
+              name={year}
+              className="mr-2"
+            />
+            <label htmlFor={`year-${year}`} className="text-sm text-slate-600">
+              {year}
+            </label>
           </div>
         ))}
       </div>
-      <div className="filter-group">
-        <h3 className="filter-title">Major</h3>
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-3">Major</h3>
         {majors.map((major) => (
-          <div key={major} className="filter-option">
-            <input onChange={() => handleMajorChange(major)} checked={selectedMajors.includes(major)} type="checkbox" id={`major-${major}`} name={major} />
-            <label htmlFor={`major-${major}`}>{major}</label>
+          <div key={major} className="flex items-center mb-2">
+            <input
+              onChange={() => handleMajorChange(major)}
+              checked={selectedMajors.includes(major)}
+              type="checkbox"
+              id={`major-${major}`}
+              name={major}
+              className="mr-2"
+            />
+            <label htmlFor={`major-${major}`} className="text-sm text-slate-600">
+              {major}
+            </label>
           </div>
         ))}
       </div>
