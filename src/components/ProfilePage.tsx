@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {type Profile} from '../types/Profile.ts'
+// import {type Profile} from '../types/Profile.ts'
 
 interface ProfilePageProps {
   userID: string;
@@ -8,13 +8,13 @@ interface ProfilePageProps {
 export default function ProfilePage({ userID }: ProfilePageProps) {
 
   const profile = {
+    id: userID,
     name: "Alice Brown",
     email: "alicebrown2028@u.northwestern.edu",
     major: "Computer Science",
     year: "2028",
     bio: "Interested in AI research and internships.",
     tags: ["AI", "Internships"],
-    id: "1",
   };
   //const profile = useDataBaseQuery(users/userID)
 

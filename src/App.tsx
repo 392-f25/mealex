@@ -1,7 +1,7 @@
 import ProfileGrid from './components/ProfileGrid.tsx';
 import FilterSidebar from './components/FilterSidebar.tsx';
 import { useState } from 'react';
-import ProfilePage from './components/ProfilePage.tsx';
+// import ProfilePage from './components/ProfilePage.tsx';
 
 export default function App() {
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
@@ -62,10 +62,10 @@ export default function App() {
 
             {/* Footer */}
             <footer className="mt-16 text-xs text-slate-600">
-              <p>
+              {/* <p>
                 Static mock — no functionality. Cards are intended to become
                 reusable React components later.
-              </p>
+              </p> */}
             </footer>
           </div>
         </main>
