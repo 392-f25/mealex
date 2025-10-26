@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
+import {type Profile} from '../types/Profile.ts'
 
-export default function ProfilePage() {
+interface ProfilePageProps {
+  profile: Profile;
+}
+
+export default function ProfilePage({ profile }: ProfilePageProps) {
   // Display the following profile information.
-  const profile = {
+   profile = {
     name: "Alice Brown",
     email: "alicebrown2028@u.northwestern.edu",
     major: "Computer Science",
     year: "2028",
     bio: "Interested in AI research and internships.",
     tags: ["AI", "Internships"],
-    initials: "AB",
+    id : 1
   };
 
   const [copied, setCopied] = useState(false);

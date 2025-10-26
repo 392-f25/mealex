@@ -2,6 +2,7 @@
 import { useParams } from '@tanstack/react-router';
 import ProfilePage from '../components/ProfilePage.tsx'
 
+
 const profile_page = () => {
   const { userID } = useParams({ from: '/profile_page/$uuid' })
 
