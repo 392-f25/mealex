@@ -28,4 +28,9 @@ To be implemented:
     - End goal: in-house messaging platform
 2. Firebase DB creation
 
-Make it so that when you hover over a profile card a connect button appears that navigates to profile page using tanstack. 
+## Conclusion
+- Implemented Profile page
+- Implemented routing
+- Implemented Profile context that can be accessed from different pages
+- Implemented Realtime DB and fetching functionality
+- Need to do: landing page/login
