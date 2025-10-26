@@ -1,8 +1,8 @@
 {
   "profiles": {
     "1": {
-      "id": 1,
-      "initials": "AB",
+      "id": "1",
+      "email": "AB",
       "name": "Alice Brown",
       "major": "Computer Science",
       "year": "2028",
@@ -10,8 +10,8 @@
       "tags": ["AI", "Internships"]
     },
     "2": {
-      "id": 2,
-      "initials": "BM",
+      "id": "2",
+      "email": "BM",
       "name": "Ben Martinez",
       "major": "Economics",
       "year": "2026",
@@ -19,8 +19,8 @@
       "tags": ["Consulting", "Finance"]
     },
     "3": {
-      "id": 3,
-      "initials": "CK",
+      "id": "3",
+      "email": "CK",
       "name": "Chris Kim",
       "major": "Electrical Engineering",
       "year": "2027",
@@ -28,8 +28,8 @@
       "tags": ["Hardware", "Embedded"]
     },
     "4": {
-      "id": 4,
-      "initials": "DL",
+      "id": "4",
+      "email": "DL",
       "name": "Dana Lee",
       "major": "Mathematics",
       "year": "2025",
@@ -37,8 +37,8 @@
       "tags": ["Research", "Tutoring"]
     },
     "5": {
-      "id": 5,
-      "initials": "ES",
+      "id": "5",
+      "email": "ES",
       "name": "Evan Smith",
       "major": "Computer Science",
       "year": "2026",
@@ -46,8 +46,8 @@
       "tags": ["Full-stack", "Open-source"]
     },
     "6": {
-      "id": 6,
-      "initials": "FG",
+      "id": "6",
+      "email": "FG",
       "name": "Fiona Green",
       "major": "Journalism",
       "year": "2028",
@@ -55,8 +55,8 @@
       "tags": ["Media", "Writing"]
     },
     "7": {
-      "id": 7,
-      "initials": "GT",
+      "id": "7",
+      "email": "GT",
       "name": "George Thompson",
       "major": "Mechanical Engineering",
       "year": "2025",
@@ -64,8 +64,8 @@
       "tags": ["Robotics", "Prototyping"]
     },
     "8": {
-      "id": 8,
-      "initials": "HL",
+      "id": "8",
+      "email": "HL",
       "name": "Hannah Li",
       "major": "Biology",
       "year": "2027",
