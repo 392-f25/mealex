@@ -1,23 +1,18 @@
 import ProfileGrid from './components/ProfileGrid.tsx';
 import FilterSidebar from './components/FilterSidebar.tsx';
 import { useState } from 'react';
+import { useProfiles } from './contexts/ProfilesContext';
 // import ProfilePage from './components/ProfilePage.tsx';
 
 export default function App() {
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
 
-  const profiles = [
-    {
-      id: "1",
-      name: 'Alice Brown',
-      email: 'alicebrown2028@u.northwestern.edu',
-      major: 'Computer Science',
-      year: '2028',
-      bio: 'Interested in AI research and internships.',
-      tags: ['AI', 'Internships'],
-    },
-  ];
+  const { profiles, isLoading, error } = useProfiles();
+
+  if (error) return <h1>Error loading user data: {`${error}`}</h1>;
+  if (isLoading) return <h1>Loading user data...</h1>;
+  if (!profiles) return <h1>No user data found</h1>;
 
   return (
     <div className="min-h-screen bg-slate-50">

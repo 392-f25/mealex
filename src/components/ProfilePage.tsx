@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useProfiles } from "../contexts/ProfilesContext";
 // import {type Profile} from '../types/Profile.ts'
 
 interface ProfilePageProps {
@@ -6,19 +7,15 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ userID }: ProfilePageProps) {
-
-  const profile = {
-    id: userID,
-    name: "Alice Brown",
-    email: "alicebrown2028@u.northwestern.edu",
-    major: "Computer Science",
-    year: "2028",
-    bio: "Interested in AI research and internships.",
-    tags: ["AI", "Internships"],
-  };
-  //const profile = useDataBaseQuery(users/userID)
+  
+  const { getProfileById } = useProfiles();
+  const profile = getProfileById(userID);
 
   const [copied, setCopied] = useState(false);
+
+  if (!profile) {
+    return <div className="max-w-3xl mx-auto p-6">Profile not found</div>;
+  }
 
   const copyEmail = async () => {
     try {
