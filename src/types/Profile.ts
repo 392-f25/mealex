@@ -1,7 +1,7 @@
 export type Profile = {
-  id: number;
-  initials: string;
+  id: string;
   name: string;
+  email: string;
   major: string;
   year: string;
   bio: string;
