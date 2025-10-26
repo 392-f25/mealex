@@ -9,7 +9,7 @@ export default function App() {
 
   const profiles = [
     {
-      id: 1,
+      id: "1",
       name: 'Alice Brown',
       email: 'alicebrown2028@u.northwestern.edu',
       major: 'Computer Science',

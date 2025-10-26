@@ -2,20 +2,21 @@ import { useState, useEffect } from "react";
 import {type Profile} from '../types/Profile.ts'
 
 interface ProfilePageProps {
-  profile: Profile;
+  userID: string;
 }
 
-export default function ProfilePage({ profile }: ProfilePageProps) {
-  // Display the following profile information.
-   profile = {
+export default function ProfilePage({ userID }: ProfilePageProps) {
+
+  const profile = {
     name: "Alice Brown",
     email: "alicebrown2028@u.northwestern.edu",
     major: "Computer Science",
     year: "2028",
     bio: "Interested in AI research and internships.",
     tags: ["AI", "Internships"],
-    id : 1
+    id: "1",
   };
+  //const profile = useDataBaseQuery(users/userID)
 
   const [copied, setCopied] = useState(false);
 
@@ -44,10 +45,6 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <div className="flex items-center gap-6">
-        <div className="h-24 w-24 rounded-full bg-slate-500 flex items-center justify-center text-2xl font-bold text-white">
-          {profile.initials}
-        </div>
-
         <div className="flex-1">
           <h1 className="text-2xl font-semibold">{profile.name}</h1>
 
