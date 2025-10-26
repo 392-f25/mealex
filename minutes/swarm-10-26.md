@@ -9,6 +9,7 @@ To be implemented:
   - DB to store information
 - Frontend
   - Profile page
+    - Add experience history
   - Edit profile from profile page
   - Login page
     - Sign in/sign up button
@@ -26,3 +27,5 @@ To be implemented:
     - Intermediate: write a message in-app, sends email automatically
     - End goal: in-house messaging platform
 2. Firebase DB creation
+
+Make it so that when you hover over a profile card a connect button appears that navigates to profile page using tanstack. 
