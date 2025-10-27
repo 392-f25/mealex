@@ -1,4 +1,5 @@
 // import { useState } from 'react';
+import { useFilterOptions } from "../hooks/useFilterOptions.ts";
 
 interface FilterSidebarProps {
   setSelectedMajors: (majors: string[]) => any;
@@ -8,16 +9,7 @@ interface FilterSidebarProps {
 }
 
 const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, selectedYears }: FilterSidebarProps) => {
-  const years = ['2025', '2026', '2027', '2028'];
-  const majors = [
-    'Computer Science',
-    'Economics',
-    'Electrical Engineering',
-    'Mathematics',
-    'Journalism',
-    'Mechanical Engineering',
-    'Biology',
-  ];
+  const { years, majors, isLoading } = useFilterOptions();
 
   const handleYearChange = (year: string) => {
     if (selectedYears.includes(year)) {
@@ -34,6 +26,10 @@ const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, se
       setSelectedMajors([...selectedMajors, major]);
     }
   };
+
+  if (isLoading) {
+    return <aside className="w-70 bg-slate-50 border-r border-slate-200 p-5">Loading filters...</aside>;
+  }
 
   return (
     <aside className="w-70 bg-slate-50 border-r border-slate-200 p-5">

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { type Profile } from '../types/Profile.ts';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, onValue, push, ref, update } from 'firebase/database';
 import { flushSync } from 'react-dom';
@@ -18,7 +19,7 @@ const firebase = initializeApp(firebaseConfig);
 const auth = getAuth(firebase);
 const database = getDatabase(firebase);
 
-export const useDataQuery = (path: string): [unknown, boolean, Error | undefined] => {
+export const useDataQuery = (path: string): [Record<string, Profile> | undefined, boolean, Error | undefined] => {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
