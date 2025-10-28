@@ -1,7 +1,22 @@
-import { signInWithGoogle } from "../utilities/firebase";
+import { signInWithGoogle, useAuthState } from "../utilities/firebase";
+import { useNavigate } from "@tanstack/react-router";
+
+const handleSignIn = () => {
+  signInWithGoogle();
+  const { isAuthenticated } = useAuthState();
+  const navigate = useNavigate();
+
+  if (isAuthenticated) {
+    navigate({ to: '/' });
+  }
+};
+
+
+
 
 const LandingPage = () => (
-  <button onClick={signInWithGoogle}>Sign In</button>
+  <button onClick={handleSignIn}>Sign In</button>
 );
+
 
 export default LandingPage;
