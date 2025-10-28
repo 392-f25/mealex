@@ -44,7 +44,7 @@ export default function App() {
             <section className="mb-8">
               <h2 className="m-0 text-2xl font-semibold">Browse profiles</h2>
               <p className="mt-1 text-slate-600">
-                Find upperclassmen and peers by major, year, and interests.
+                Find peers by major, year, and interests.
               </p>
             </section>
 
