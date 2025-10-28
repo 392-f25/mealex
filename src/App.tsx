@@ -2,6 +2,7 @@ import ProfileGrid from './components/ProfileGrid.tsx';
 import FilterSidebar from './components/FilterSidebar.tsx';
 import { useState } from 'react';
 import { useProfiles } from './contexts/ProfilesContext';
+import { signOut } from './utilities/firebase.ts';
 // import ProfilePage from './components/ProfilePage.tsx';
 
 export default function App() {
@@ -26,6 +27,9 @@ export default function App() {
         </div>
         <button className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
           Manage
+        </button>
+        <button onClick={signOut} className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
+          Log Out
         </button>
       </div>
 
