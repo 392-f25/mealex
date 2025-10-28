@@ -25,12 +25,14 @@ export default function App() {
             Network with peers over meals
           </p>
         </div>
-        <button className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
-          Manage
-        </button>
-        <button onClick={signOut} className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
-          Log Out
-        </button>
+        <div className='flex gap-2'>
+          <button className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
+            Manage
+          </button>
+          <button onClick={signOut} className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
+            Log Out
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row">
