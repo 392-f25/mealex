@@ -11,13 +11,5 @@ function LandingComponent() {
 }
 
 export const Route = createFileRoute('/landing')({
-  // If the user is already authenticated, redirect them to the home page.
-  beforeLoad: ({ context }) => {
-    if (context.auth.isAuthenticated) {
-      throw redirect({
-        to: '/',
-      })
-    }
-  },
   component: LandingComponent,
 })
