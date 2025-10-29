@@ -15,6 +15,11 @@ export default function App() {
   if (isLoading) return <h1>Loading user data...</h1>;
   if (!profiles) return <h1>No user data found</h1>;
 
+  const handleManageProfile = () => {
+    // placeholder function
+    alert("Manage profile coming soon!");
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Topbar */}
@@ -26,10 +31,16 @@ export default function App() {
           </p>
         </div>
         <div className='flex gap-2'>
-          <button className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
+          <button
+            onClick={handleManageProfile}
+            className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition cursor-pointer hover:bg-blue-100"
+          >
             Manage
           </button>
-          <button onClick={signOut} className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition hover:bg-blue-50">
+          <button
+            onClick={signOut}
+            className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition cursor-pointer hover:bg-blue-100"
+          >
             Log Out
           </button>
         </div>

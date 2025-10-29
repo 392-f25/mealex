@@ -100,7 +100,7 @@ export const addAuthStateListener = (fn: NextOrObserver<User>) => (
 );
 
 export const useAuthState = (): AuthState => {
-  const [user, setUser] = useState(auth.currentUser)
+  const [user, setUser] = useState<User | null>(null)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
   const isAuthenticated = !!user;
 

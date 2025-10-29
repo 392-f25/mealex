@@ -43,7 +43,7 @@ const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, se
               type="checkbox"
               id={`year-${year}`}
               name={year}
-              className="mr-2"
+              className="mr-2 cursor-pointer"
             />
             <label htmlFor={`year-${year}`} className="text-sm text-slate-600">
               {year}
@@ -61,7 +61,7 @@ const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, se
               type="checkbox"
               id={`major-${major}`}
               name={major}
-              className="mr-2"
+              className="mr-2 cursor-pointer"
             />
             <label htmlFor={`major-${major}`} className="text-sm text-slate-600">
               {major}

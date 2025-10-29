@@ -42,7 +42,7 @@ export default function ProfileCard({ profile }: Props) {
 
         <button
           onClick={goToProfile}
-          className="rounded-md mt-4 bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700"
+          className="rounded-md mt-4 bg-blue-600 px-3 py-1 text-sm font-medium text-white cursor-pointer hover:bg-blue-700"
         >
           Connect
         </button>

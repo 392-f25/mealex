@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ProfilePage from '../components/ProfilePage.tsx'
+import { StrictMode } from 'react'
 
 function ProfilePageRoute() {
   const params = Route.useParams()
@@ -8,7 +9,11 @@ function ProfilePageRoute() {
     return <div>User Not Found!</div>
   }
   
-  return <ProfilePage userID={params.uuid}/>
+  return (
+    <StrictMode>
+      <ProfilePage userID={params.uuid}/>
+    </StrictMode>
+  );
 }
 
 export const Route = createFileRoute('/profilepage/$uuid')({
