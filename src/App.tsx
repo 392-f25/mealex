@@ -1,13 +1,14 @@
 import ProfileGrid from './components/ProfileGrid.tsx';
 import FilterSidebar from './components/FilterSidebar.tsx';
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { useProfiles } from './contexts/ProfilesContext';
 import { signOut } from './utilities/firebase.ts';
-// import ProfilePage from './components/ProfilePage.tsx';
 
 export default function App() {
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const { profiles, isLoading, error } = useProfiles();
 
@@ -16,8 +17,7 @@ export default function App() {
   if (!profiles) return <h1>No user data found</h1>;
 
   const handleManageProfile = () => {
-    // placeholder function
-    alert("Manage profile coming soon!");
+    navigate({ to: '/profile' });
   };
 
   return (
@@ -75,7 +75,7 @@ export default function App() {
             {/* Footer */}
             <footer className="mt-16 text-xs text-slate-600">
               {/* <p>
-                Static mock — no functionality. Cards are intended to become
+                Static mock – no functionality. Cards are intended to become
                 reusable React components later.
               </p> */}
             </footer>
