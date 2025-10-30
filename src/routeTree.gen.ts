@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LandingRouteImport } from './routes/landing'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfilepageUuidRouteImport } from './routes/profilepage.$uuid'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LandingRoute = LandingRouteImport.update({
   id: '/landing',
   path: '/landing',
@@ -32,35 +38,46 @@ const ProfilepageUuidRoute = ProfilepageUuidRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/profile': typeof ProfileRoute
   '/profilepage/$uuid': typeof ProfilepageUuidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/profile': typeof ProfileRoute
   '/profilepage/$uuid': typeof ProfilepageUuidRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/landing': typeof LandingRoute
+  '/profile': typeof ProfileRoute
   '/profilepage/$uuid': typeof ProfilepageUuidRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/landing' | '/profilepage/$uuid'
+  fullPaths: '/' | '/landing' | '/profile' | '/profilepage/$uuid'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/landing' | '/profilepage/$uuid'
-  id: '__root__' | '/' | '/landing' | '/profilepage/$uuid'
+  to: '/' | '/landing' | '/profile' | '/profilepage/$uuid'
+  id: '__root__' | '/' | '/landing' | '/profile' | '/profilepage/$uuid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LandingRoute: typeof LandingRoute
+  ProfileRoute: typeof ProfileRoute
   ProfilepageUuidRoute: typeof ProfilepageUuidRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/landing': {
       id: '/landing'
       path: '/landing'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LandingRoute: LandingRoute,
+  ProfileRoute: ProfileRoute,
   ProfilepageUuidRoute: ProfilepageUuidRoute,
 }
 export const routeTree = rootRouteImport

@@ -113,3 +113,23 @@ export const useAuthState = (): AuthState => {
 
   return {user, isAuthenticated, isInitialLoading };
 };
+
+export const useCheckFirstTimeUser = (userId: string | undefined): boolean => {
+  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [data] = useDataQuery(userId ? `/profiles/${userId}` : '/profiles');
+
+  useEffect(() => {
+    if (!userId) {
+      setIsFirstTime(true);
+      return;
+    }
+
+    if (data === null) {
+      setIsFirstTime(true);
+    } else if (data && data[userId]) {
+      setIsFirstTime(false);
+    }
+  }, [userId, data]);
+
+  return isFirstTime;
+};
