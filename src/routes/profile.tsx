@@ -43,7 +43,7 @@ function RouteComponent() {
     navigate({ to: '/' });
   };
 
-  const handleSubmit = async (data: Profile, isDirty: boolean) => {
+  const handleSubmit = async (data: Profile) => {
     if (!user?.uid) {
       throw new Error('User not authenticated');
     }
