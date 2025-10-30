@@ -1,76 +1,163 @@
 {
-  "profiles": {
-    "1": {
-      "id": "1",
-      "email": "AB",
-      "name": "Alice Brown",
-      "major": "Computer Science",
-      "year": "2028",
+  "profiles": [
+    null,
+    {
       "bio": "Interested in AI research and internships.",
-      "tags": ["AI", "Internships"]
-    },
-    "2": {
-      "id": "2",
-      "email": "BM",
-      "name": "Ben Martinez",
-      "major": "Economics",
-      "year": "2026",
-      "bio": "Interested in consulting and finance events.",
-      "tags": ["Consulting", "Finance"]
-    },
-    "3": {
-      "id": "3",
-      "email": "CK",
-      "name": "Chris Kim",
-      "major": "Electrical Engineering",
-      "year": "2027",
-      "bio": "Hardware design and embedded systems.",
-      "tags": ["Hardware", "Embedded"]
-    },
-    "4": {
-      "id": "4",
-      "email": "DL",
-      "name": "Dana Lee",
-      "major": "Mathematics",
-      "year": "2025",
-      "bio": "Enjoys tutoring and research in applied math.",
-      "tags": ["Research", "Tutoring"]
-    },
-    "5": {
-      "id": "5",
-      "email": "ES",
-      "name": "Evan Smith",
+      "email": "alicebrown2028@u.northwestern.edu",
+      "id": "1",
       "major": "Computer Science",
-      "year": "2026",
+      "name": "Alice Brown",
+      "tags": [
+        "AI",
+        "Internships"
+      ],
+      "year": "2028"
+    },
+    {
+      "bio": "Interested in consulting and finance events.",
+      "email": "benmartinez2026@u.northwestern.edu",
+      "id": "2",
+      "major": "Economics",
+      "name": "Ben Martinez",
+      "tags": [
+        "Consulting",
+        "Finance"
+      ],
+      "year": "2026"
+    },
+    {
+      "bio": "Hardware design and embedded systems.",
+      "email": "chriskim2027@u.northwestern.edu",
+      "id": "3",
+      "major": "Electrical Engineering",
+      "name": "Chris Kim",
+      "tags": [
+        "Hardware",
+        "Embedded"
+      ],
+      "year": "2027"
+    },
+    {
+      "bio": "Enjoys tutoring and research in applied math.",
+      "email": "danalee2025@u.northwestern.edu",
+      "id": "4",
+      "major": "Mathematics",
+      "name": "Dana Lee",
+      "tags": [
+        "Research",
+        "Tutoring"
+      ],
+      "year": "2025"
+    },
+    {
       "bio": "Full-stack dev, open-source contributor.",
-      "tags": ["Full-stack", "Open-source"]
+      "email": "evansmith2026@u.northwestern.edu",
+      "id": "5",
+      "major": "Computer Science",
+      "name": "Evan Smith",
+      "tags": [
+        "Full-stack",
+        "Open-source"
+      ],
+      "year": "2026"
     },
-    "6": {
-      "id": "6",
-      "email": "FG",
-      "name": "Fiona Green",
-      "major": "Journalism",
-      "year": "2028",
+    {
       "bio": "Interested in media, writing, and communications.",
-      "tags": ["Media", "Writing"]
+      "email": "fionagreen2028@u.northwestern.edu",
+      "id": "6",
+      "major": "Journalism",
+      "name": "Fiona Green",
+      "tags": [
+        "Media",
+        "Writing"
+      ],
+      "year": "2028"
     },
-    "7": {
-      "id": "7",
-      "email": "GT",
-      "name": "George Thompson",
-      "major": "Mechanical Engineering",
-      "year": "2025",
+    {
       "bio": "Robotics club lead, loves prototyping.",
-      "tags": ["Robotics", "Prototyping"]
+      "email": "georgethompson2025@u.northwestern.edu",
+      "id": "7",
+      "major": "Mechanical Engineering",
+      "name": "George Thompson",
+      "tags": [
+        "Robotics",
+        "Prototyping"
+      ],
+      "year": "2025"
     },
-    "8": {
-      "id": "8",
-      "email": "HL",
-      "name": "Hannah Li",
-      "major": "Biology",
-      "year": "2027",
+    {
       "bio": "Lab experience, pre-med track.",
-      "tags": ["Lab", "Pre-med"]
+      "email": "hannahli2027@u.northwestern.edu",
+      "id": "8",
+      "major": "Biology",
+      "name": "Hannah Li",
+      "tags": [
+        "Lab",
+        "Pre-med"
+      ],
+      "year": "2027"
+    },
+    {
+      "bio": "Senior studying CS with a focus in AI & SWE. Previously interned at a finance firm and startup",
+      "email": "EikoReisz2026@u.northwestern.edu",
+      "id": "9",
+      "major": "Computer Science",
+      "name": "Eiko Reisz",
+      "tags": [
+        "AI",
+        "Finance",
+        "SWE"
+      ],
+      "year": "2026"
+    },
+    {
+      "bio": "Fourth year Computer Science student with a minor in Spanish. Interned at IBM",
+      "email": "IanSlater2026@u.northwestern.edu",
+      "id": "10",
+      "major": "Computer Science",
+      "name": "Ian Slater",
+      "tags": [
+        "Tech Sales",
+        "SWE"
+      ],
+      "year": "2026"
+    },
+    {
+      "bio": "Junior studying CS + Math",
+      "email": "RohanSekhar2027@u.northwestern.edu",
+      "id": "11",
+      "major": "Computer Science",
+      "name": "Rohan Sekhar",
+      "tags": [
+        "Math",
+        "Software Development"
+      ],
+      "year": "2027"
+    },
+    {
+      "bio": "Junior studying Computer Science",
+      "email": "BrandonDo2027@u.northwestern.edu",
+      "id": "12",
+      "major": "Computer Science",
+      "name": "Brandon Do",
+      "tags": [
+        "Full Stack",
+        "Web Development"
+      ],
+      "year": "2027"
+    },
+    {
+      "bio": "Master's student studying BME with a focus in software design. Prev interned at TikTok",
+      "email": "EddieShangguan2027@u.northwestern.edu",
+      "id": "13",
+      "major": "Biomedical Engineering",
+      "name": "Eddie Shangguan",
+      "tags": [
+        "AI",
+        "Data Engineering",
+        "Software Design"
+      ],
+      "year": "2027"
     }
-  }
+  ]
 }
