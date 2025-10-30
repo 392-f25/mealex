@@ -6,7 +6,7 @@ interface SearchBarProps {
   placeholder?: string
 }
 
-export default function SearchBar({ selectedTags, setSelectedTags, placeholder = 'Add a tag and press Enter' }: SearchBarProps) {
+export default function SearchBar({ selectedTags, setSelectedTags, placeholder = 'Add Filter' }: SearchBarProps) {
   const [input, setInput] = useState('')
 
   const addTag = (tag: string) => {
@@ -34,20 +34,6 @@ export default function SearchBar({ selectedTags, setSelectedTags, placeholder =
   return (
     <div>
       <label className="text-sm font-semibold text-slate-700">Tags</label>
-      <div className="mt-2 flex gap-2 flex-wrap">
-        {selectedTags.map(tag => (
-          <button
-            key={tag}
-            onClick={() => removeTag(tag)}
-            className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600"
-            aria-label={`remove ${tag}`}
-          >
-            <span>{tag}</span>
-            <span className="ml-1 text-xs">✕</span>
-          </button>
-        ))}
-      </div>
-
       <div className="mt-3 flex">
         <input
           value={input}
@@ -62,6 +48,20 @@ export default function SearchBar({ selectedTags, setSelectedTags, placeholder =
         >
           Add
         </button>
+      </div>
+
+      <div className="mt-2 flex gap-2 flex-wrap">
+        {selectedTags.map(tag => (
+          <button
+            key={tag}
+            onClick={() => removeTag(tag)}
+            className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600"
+            aria-label={`remove ${tag}`}
+          >
+            <span>{tag}</span>
+            <span className="ml-1 text-xs">✕</span>
+          </button>
+        ))}
       </div>
     </div>
   )

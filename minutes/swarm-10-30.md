@@ -10,3 +10,4 @@
 - in-app messaging
 
 ## Conclusion
+- Added a search bar (case sensitivity)
