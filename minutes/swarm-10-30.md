@@ -10,4 +10,5 @@
 - in-app messaging
 
 ## Conclusion
-- Added a search bar (case sensitivity)
+- Added a search bar
+- Add profile creation and editing
