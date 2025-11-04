@@ -40,11 +40,11 @@ export default function SearchBar({ selectedTags, setSelectedTags, placeholder =
           onChange={e => setInput(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className="flex-1 rounded-md border border-slate-200 px-3 py-2 text-sm"
+          className="min-w-0 flex-1 rounded-md border border-slate-200 px-3 py-2 text-sm"
         />
         <button
           onClick={() => addTag(input)}
-          className="ml-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="ml-2 shrink-0 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
           Add
         </button>
