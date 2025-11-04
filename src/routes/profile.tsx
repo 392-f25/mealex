@@ -36,7 +36,7 @@ function RouteComponent() {
     major: '',
     year: '',
     bio: '',
-    tags: [],
+    interests: [],
     availability: [],
   };
 
@@ -58,7 +58,7 @@ function RouteComponent() {
         major: data.major,
         year: data.year,
         bio: data.bio,
-        tags: data.tags,
+        interests: data.interests,
         availability: data.availability,
       };
 

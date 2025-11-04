@@ -15,9 +15,9 @@ const ProfileGrid = ({ selectedMajors, selectedYears, selectedTags, profiles }: 
       .filter(profile => selectedYears.length === 0 || selectedYears.includes(profile.year))
       .filter(profile => {
         if (!selectedTags || selectedTags.length === 0) return true;
-        if (!profile.tags) return false;
-        // match if profile has at least one of the selected tags (case-insensitive)
-        const profileTagsLower = profile.tags.map(t => t.toLowerCase());
+        if (!profile.interests) return false;
+        // match if profile has at least one of the selected interests (case-insensitive)
+        const profileTagsLower = profile.interests.map(t => t.toLowerCase());
         return selectedTags.some(tag => profileTagsLower.includes(tag.toLowerCase()));
       })
       .map(profile => (

@@ -9,7 +9,7 @@ interface FilterSidebarProps {
   selectedMajors: string[];
   selectedYears: string[];
   selectedTags: string[];
-  setSelectedTags: (tags: string[]) => any;
+  setSelectedTags: (interests: string[]) => any;
 }
 
 const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, selectedYears, selectedTags, setSelectedTags }: FilterSidebarProps) => {

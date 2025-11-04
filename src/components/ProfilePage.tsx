@@ -118,11 +118,11 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
           </div>
 
           {/* Interests Section */}
-          {profile.tags && profile.tags.length > 0 && (
+          {profile.interests && profile.interests.length > 0 && (
             <div className="mb-8 pb-8 border-b border-slate-200">
               <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests</h2>
               <div className="flex flex-wrap gap-2">
-                {profile.tags.map((tag) => (
+                {profile.interests.map((tag) => (
                   <span
                     key={tag}
                     className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 border border-blue-200"

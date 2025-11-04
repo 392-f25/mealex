@@ -22,7 +22,7 @@ const profileSchema = z.object({
     z.literal('Graduate'),
   ]),
   bio: z.string().min(1, 'Bio is required').max(500, 'Bio must be less than 500 characters'),
-  tags: z.array(z.string()).min(1, 'Add at least one interest').max(5, 'Maximum 5 interests allowed'),
+  interests: z.array(z.string()).min(1, 'Add at least one interest').max(5, 'Maximum 5 interests allowed'),
   availability: z.array(z.string()).min(1, 'Add at least one availability'),
 });
 
@@ -54,25 +54,25 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
       major: profile.major,
       year: String(profile.year),
       bio: profile.bio,
-      tags: profile.tags || [],
+      interests: profile.interests || [],
       availability: profile.availability || [],
     } : undefined,
     mode: 'onChange',
     resolver: zodResolver(profileSchema),
   });
 
-  const tags = watch('tags');
+  const interests = watch('interests');
   const availability = watch('availability');
 
   const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setValue('tags', [...tags, tagInput.trim()], { shouldDirty: true });
+    if (tagInput.trim() && !interests.includes(tagInput.trim())) {
+      setValue('interests', [...interests, tagInput.trim()], { shouldDirty: true });
       setTagInput('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setValue('tags', tags.filter(tag => tag !== tagToRemove), { shouldDirty: true });
+    setValue('interests', interests.filter(tag => tag !== tagToRemove), { shouldDirty: true });
   };
 
   const handleAddAvailability = () => {
@@ -227,14 +227,14 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
               Add
             </button>
           </div>
-          {errors.tags && (
+          {errors.interests && (
             <span className="text-red-500 text-sm mt-1 block">
-              {errors.tags.message}
+              {errors.interests.message}
             </span>
           )}
-          {tags.length > 0 && (
+          {interests.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {tags.map((tag) => (
+              {interests.map((tag) => (
                 <div
                   key={tag}
                   className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"

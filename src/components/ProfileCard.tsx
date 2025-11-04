@@ -30,9 +30,9 @@ export default function ProfileCard({ profile }: Props) {
 
         {profile.bio && <p className="mt-2 text-sm text-gray-700">{profile.bio}</p>}
 
-        {profile.tags && profile.tags.length > 0 && (
+        {profile.interests && profile.interests.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
-            {profile.tags.map((tag) => (
+            {profile.interests.map((tag) => (
               <span key={tag} className="rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-600">
                 {tag}
               </span>

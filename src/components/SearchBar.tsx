@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 interface SearchBarProps {
   selectedTags: string[]
-  setSelectedTags: (tags: string[]) => void
+  setSelectedTags: (interests: string[]) => void
   placeholder?: string
 }
 
