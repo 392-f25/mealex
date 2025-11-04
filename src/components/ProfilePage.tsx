@@ -119,7 +119,7 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
 
           {/* Interests Section */}
           {profile.tags && profile.tags.length > 0 && (
-            <div>
+            <div className="mb-8 pb-8 border-b border-slate-200">
               <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.tags.map((tag) => (
@@ -128,6 +128,23 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
                     className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 border border-blue-200"
                   >
                     {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Availability Section */}
+          {profile.availability && profile.availability.length > 0 && (
+            <div>
+              <h2 className="mb-3 text-sm font-semibold text-slate-700">Availability</h2>
+              <div className="flex flex-wrap gap-2">
+                {profile.availability.map((slot) => (
+                  <span
+                    key={slot}
+                    className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700 border border-green-200"
+                  >
+                    {slot}
                   </span>
                 ))}
               </div>
