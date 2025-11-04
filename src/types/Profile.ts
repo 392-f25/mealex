@@ -6,4 +6,5 @@ export type Profile = {
   year: string;
   bio: string;
   tags: string[];
+  availability: string[];
 }
