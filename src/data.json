@@ -1,6 +1,5 @@
 {
   "profiles": [
-    null,
     {
       "bio": "Interested in AI research and internships.",
       "email": "alicebrown2028@u.northwestern.edu",
@@ -158,6 +157,23 @@
         "Software Design"
       ],
       "year": "2027"
+    }
+  ],
+  "invitations": [
+    {
+      "id": "1",
+      "messages": [
+        {
+          "senderId": "9",
+          "receiverId": "1",
+          "message": "Hi Alice, I see you're interested in AI research. I'd love to connect and discuss potential opportunities!"
+        },
+        {
+          "senderId": "10",
+          "receiverId": "1",
+          "message": "Hello Alice, as a fellow CS student, I'm interested in your AI projects. Let's connect!"
+        }
+      ]
     }
   ]
 }

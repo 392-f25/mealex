@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useProfiles } from "../contexts/ProfilesContext";
 import { ArrowLeft, Copy, CheckCircle } from "lucide-react";
-// import {type Profile} from '../types/Profile.ts'
+import InvitationForm from "./InvitationForm";
+import { useAuthState } from "../utilities/firebase";
 
 interface ProfilePageProps {
   userID: string;
@@ -10,7 +11,7 @@ interface ProfilePageProps {
 export default function ProfilePage({ userID }: ProfilePageProps) {
   const { isLoading, getProfileById } = useProfiles();
   const profile = getProfileById(userID);
-
+  const { user } = useAuthState();
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -58,6 +59,8 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
       setCopied(true);
     }
   };
+
+  const isOwnProfile = user && user.uid === profile.id;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -149,6 +152,11 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Invitation Form */}
+          {user && !isOwnProfile && (
+            <InvitationForm receiverId={profile.id} />
           )}
         </div>
       </div>
