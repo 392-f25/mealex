@@ -5,5 +5,6 @@ export type Profile = {
   major: string;
   year: string;
   bio: string;
-  tags: string[];
+  interests: string[];
+  availability: string[];
 }

@@ -1,13 +1,12 @@
 {
   "profiles": [
-    null,
     {
       "bio": "Interested in AI research and internships.",
       "email": "alicebrown2028@u.northwestern.edu",
       "id": "1",
       "major": "Computer Science",
       "name": "Alice Brown",
-      "tags": [
+      "interests": [
         "AI",
         "Internships"
       ],
@@ -19,7 +18,7 @@
       "id": "2",
       "major": "Economics",
       "name": "Ben Martinez",
-      "tags": [
+      "interests": [
         "Consulting",
         "Finance"
       ],
@@ -31,7 +30,7 @@
       "id": "3",
       "major": "Electrical Engineering",
       "name": "Chris Kim",
-      "tags": [
+      "interests": [
         "Hardware",
         "Embedded"
       ],
@@ -43,7 +42,7 @@
       "id": "4",
       "major": "Mathematics",
       "name": "Dana Lee",
-      "tags": [
+      "interests": [
         "Research",
         "Tutoring"
       ],
@@ -55,7 +54,7 @@
       "id": "5",
       "major": "Computer Science",
       "name": "Evan Smith",
-      "tags": [
+      "interests": [
         "Full-stack",
         "Open-source"
       ],
@@ -67,7 +66,7 @@
       "id": "6",
       "major": "Journalism",
       "name": "Fiona Green",
-      "tags": [
+      "interests": [
         "Media",
         "Writing"
       ],
@@ -79,7 +78,7 @@
       "id": "7",
       "major": "Mechanical Engineering",
       "name": "George Thompson",
-      "tags": [
+      "interests": [
         "Robotics",
         "Prototyping"
       ],
@@ -91,7 +90,7 @@
       "id": "8",
       "major": "Biology",
       "name": "Hannah Li",
-      "tags": [
+      "interests": [
         "Lab",
         "Pre-med"
       ],
@@ -103,7 +102,7 @@
       "id": "9",
       "major": "Computer Science",
       "name": "Eiko Reisz",
-      "tags": [
+      "interests": [
         "AI",
         "Finance",
         "SWE"
@@ -116,7 +115,7 @@
       "id": "10",
       "major": "Computer Science",
       "name": "Ian Slater",
-      "tags": [
+      "interests": [
         "Tech Sales",
         "SWE"
       ],
@@ -128,7 +127,7 @@
       "id": "11",
       "major": "Computer Science",
       "name": "Rohan Sekhar",
-      "tags": [
+      "interests": [
         "Math",
         "Software Development"
       ],
@@ -140,7 +139,7 @@
       "id": "12",
       "major": "Computer Science",
       "name": "Brandon Do",
-      "tags": [
+      "interests": [
         "Full Stack",
         "Web Development"
       ],
@@ -152,12 +151,29 @@
       "id": "13",
       "major": "Biomedical Engineering",
       "name": "Eddie Shangguan",
-      "tags": [
+      "interests": [
         "AI",
         "Data Engineering",
         "Software Design"
       ],
       "year": "2027"
+    }
+  ],
+  "invitations": [
+    {
+      "id": "1",
+      "messages": [
+        {
+          "senderId": "9",
+          "receiverId": "1",
+          "message": "Hi Alice, I see you're interested in AI research. I'd love to connect and discuss potential opportunities!"
+        },
+        {
+          "senderId": "10",
+          "receiverId": "1",
+          "message": "Hello Alice, as a fellow CS student, I'm interested in your AI projects. Let's connect!"
+        }
+      ]
     }
   ]
 }

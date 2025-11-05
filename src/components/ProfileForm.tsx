@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+
 const currentYear = new Date().getFullYear();
 
 // Zod schema for profile validation
@@ -21,7 +22,8 @@ const profileSchema = z.object({
     z.literal('Graduate'),
   ]),
   bio: z.string().min(1, 'Bio is required').max(500, 'Bio must be less than 500 characters'),
-  tags: z.array(z.string()).min(1, 'Add at least one interest').max(5, 'Maximum 5 interests allowed'),
+  interests: z.array(z.string()).min(1, 'Add at least one interest').max(5, 'Maximum 5 interests allowed'),
+  availability: z.array(z.string()).min(1, 'Add at least one availability'),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -36,6 +38,7 @@ interface ProfileFormProps {
 const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: ProfileFormProps) => {
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
+  const [availabilityInput, setAvailabilityInput] = useState<string>('');
 
   const {
     register,
@@ -51,29 +54,49 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
       major: profile.major,
       year: String(profile.year),
       bio: profile.bio,
-      tags: profile.tags || [],
+      interests: profile.interests || [],
+      availability: profile.availability || [],
     } : undefined,
     mode: 'onChange',
     resolver: zodResolver(profileSchema),
   });
 
-  const tags = watch('tags');
+  const interests = watch('interests');
+  const availability = watch('availability');
 
   const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setValue('tags', [...tags, tagInput.trim()], { shouldDirty: true });
+    if (tagInput.trim() && !interests.includes(tagInput.trim())) {
+      setValue('interests', [...interests, tagInput.trim()], { shouldDirty: true });
       setTagInput('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setValue('tags', tags.filter(tag => tag !== tagToRemove), { shouldDirty: true });
+    setValue('interests', interests.filter(tag => tag !== tagToRemove), { shouldDirty: true });
+  };
+
+  const handleAddAvailability = () => {
+    if (availabilityInput.trim() && !availability.includes(availabilityInput.trim())) {
+      setValue('availability', [...availability, availabilityInput.trim()], { shouldDirty: true });
+      setAvailabilityInput('');
+    }
+  };
+
+  const handleRemoveAvailability = (availabilityToRemove: string) => {
+    setValue('availability', availability.filter(slot => slot !== availabilityToRemove), { shouldDirty: true });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAddTag();
+    }
+  };
+
+  const handleAvailabilityKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddAvailability();
     }
   };
 
@@ -204,14 +227,14 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
               Add
             </button>
           </div>
-          {errors.tags && (
+          {errors.interests && (
             <span className="text-red-500 text-sm mt-1 block">
-              {errors.tags.message}
+              {errors.interests.message}
             </span>
           )}
-          {tags.length > 0 && (
+          {interests.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {tags.map((tag) => (
+              {interests.map((tag) => (
                 <div
                   key={tag}
                   className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
@@ -221,6 +244,54 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
                     className="text-blue-600 hover:text-blue-800 font-bold"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </label>
+
+        <label className="block">
+          <span className="text-sm font-semibold text-gray-700">Availability</span>
+          <div className="flex gap-2 mt-1">
+            <input
+              type="text"
+              value={availabilityInput}
+              onChange={(e) => setAvailabilityInput(e.target.value)}
+              onKeyPress={handleAvailabilityKeyPress}
+              className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+              placeholder="e.g. Monday 9-11 AM, Weekdays after 3 PM"
+            />
+            <button
+              type="button"
+              onClick={handleAddAvailability}
+              className="px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition"
+            >
+              Add
+            </button>
+          </div>
+          {errors.availability && (
+            <span className="text-red-500 text-sm mt-1 block">
+              {errors.availability.message}
+            </span>
+          )}
+          <div className="text-xs text-gray-500 mt-1">
+            Add time slots when you're available to connect with others
+          </div>
+          {availability.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {availability.map((slot) => (
+                <div
+                  key={slot}
+                  className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium"
+                >
+                  {slot}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveAvailability(slot)}
+                    className="text-green-600 hover:text-green-800 font-bold"
                   >
                     ×
                   </button>

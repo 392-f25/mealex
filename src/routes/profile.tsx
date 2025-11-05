@@ -36,7 +36,8 @@ function RouteComponent() {
     major: '',
     year: '',
     bio: '',
-    tags: [],
+    interests: [],
+    availability: [],
   };
 
   const handleCancel = () => {
@@ -57,7 +58,8 @@ function RouteComponent() {
         major: data.major,
         year: data.year,
         bio: data.bio,
-        tags: data.tags,
+        interests: data.interests,
+        availability: data.availability,
       };
 
       await set(ref(database, `/profiles/${user.uid}`), profileData);
