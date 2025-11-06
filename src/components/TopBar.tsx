@@ -1,41 +1,51 @@
 import { useNavigate } from '@tanstack/react-router';
 import { signOut, useAuthState, useDataQuery } from '../utilities/firebase';
 import { useProfiles } from '../contexts/ProfilesContext';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, X } from 'lucide-react';
 import { type Message } from '../types/Message';
 import { useState, useEffect, useRef } from 'react';
+import { Link } from '@tanstack/react-router';
 
 type MessagesPopupProps = {
   messages: Message[];
+  closePopup: () => void;
 };
 
-const MessagesPopup = ({ messages }: MessagesPopupProps) => {
+const MessagesPopup = ({ messages, closePopup }: MessagesPopupProps) => {
   const { getProfileById } = useProfiles();
-
-  if (messages.length === 0) {
-    return (
-      <div className="absolute top-14 right-0 w-80 bg-white rounded-lg shadow-lg border p-4">
-        <p className="text-sm text-gray-500">No new messages.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="absolute top-14 right-0 w-80 bg-white rounded-lg shadow-lg border">
-      <div className="p-4 border-b">
-        <h3 className="font-semibold">Messages</h3>
+      <div className="p-4 border-b flex justify-between items-center">
+        <h3 className="font-semibold">Invitations</h3>
+        <div className='flex items-center gap-2'>
+        {messages.length > 0 && 
+            <Link to="/profile" onClick={closePopup} className="text-sm text-blue-600 hover:underline">
+                View All
+            </Link>
+        }
+        <button onClick={closePopup} className="p-1 rounded-full hover:bg-gray-200">
+            <X className="h-4 w-4" />
+        </button>
+        </div>
       </div>
+      {messages.length === 0 ? (
+         <div className="p-4">
+            <p className="text-sm text-gray-500">No new invitations.</p>
+        </div>
+        ) : (
       <div className="max-h-96 overflow-y-auto">
         {messages.map((msg) => {
           const senderProfile = getProfileById(msg.sender);
           return (
             <div key={msg.id} className="p-4 border-b hover:bg-gray-50">
               <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
-              <p className="text-sm text-gray-600 truncate">{msg.body}</p>
+              
             </div>
           );
         })}
       </div>
+      )}
     </div>
   );
 };
@@ -97,7 +107,7 @@ const TopBar = () => {
               </span>
             )}
           </button>
-          {isPopupOpen && <MessagesPopup messages={userMessages} />}
+          {isPopupOpen && <MessagesPopup messages={userMessages} closePopup={() => setIsPopupOpen(false)} />}
         </div>
 
         <button

@@ -1,8 +1,11 @@
 import { useForm } from 'react-hook-form'
 import { type Profile } from '../types/Profile.ts';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuthState, useDataQuery } from '../utilities/firebase.ts';
+import { useProfiles } from '../contexts/ProfilesContext';
+import { type Message } from '../types/Message.ts';
 
 
 const currentYear = new Date().getFullYear();
@@ -39,6 +42,24 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
   const [availabilityInput, setAvailabilityInput] = useState<string>('');
+
+  const { user } = useAuthState();
+  const { getProfileById } = useProfiles();
+  const queryPath = user ? `/invitations/${user.uid}/messages` : 'no-user-path';
+  const [messagesData] = useDataQuery(queryPath);
+  const [userMessages, setUserMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    if (user && messagesData) {
+      const messages = Object.entries(messagesData).map(([id, data]: [string, any]) => ({
+        id,
+        ...data,
+      }));
+      setUserMessages(messages);
+    } else {
+      setUserMessages([]);
+    }
+  }, [user, messagesData]);
 
   const {
     register,
@@ -332,10 +353,30 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
 
       {/* Right section - Messages */}
       <div className="w-96 bg-white rounded-lg shadow-xl p-8">
-        <h2 className="text-2xl font-bold mb-4">Messages</h2>
-        <div className="text-sm text-slate-600">
-          Your messages will appear here
-        </div>
+        <h2 className="text-2xl font-bold mb-4">Invitations</h2>
+        {userMessages.length > 0 ? (
+          <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+            {userMessages.map((msg) => {
+              const senderProfile = getProfileById(msg.sender);
+              return (
+                <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
+                    <p className="text-xs text-gray-500">Wants to connect!</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600">Accept</button>
+                    <button className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600">Decline</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-sm text-slate-600">
+            You have no new invitations.
+          </div>
+        )}
       </div>
     </div>
   );
