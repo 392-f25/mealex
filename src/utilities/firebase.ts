@@ -45,6 +45,14 @@ const timestampMessage = (message: string) => (
   `${new Date().toLocaleString()}: ${message}`
 );
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("User logged in, photo:", user.photoURL);
+  } else {
+    console.log("No user logged in");
+  }
+});
+
 // store a value under a path
 export const useDataUpdate = (path: string): [(value:object) => void, string | undefined, Error | undefined] => {
   const [message, setMessage] = useState("");
