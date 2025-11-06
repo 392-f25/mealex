@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthState, useDataQuery } from '../utilities/firebase.ts';
+import { getDatabase } from 'firebase/database';
+import { ref, update } from 'firebase/database';
 import { useProfiles } from '../contexts/ProfilesContext';
 import { type Message } from '../types/Message.ts';
 
@@ -45,16 +47,33 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
 
   const { user } = useAuthState();
   const { getProfileById } = useProfiles();
+  const database = getDatabase();
   const queryPath = user ? `/invitations/${user.uid}/messages` : 'no-user-path';
   const [messagesData] = useDataQuery(queryPath);
   const [userMessages, setUserMessages] = useState<Message[]>([]);
 
+  const handleMessageResolution = async (messageId: string, accept: boolean) => {
+    if (!user) return;
+    
+    try {
+      const messageRef = ref(database, `/invitations/${user.uid}/messages/${messageId}`);
+      await update(messageRef, {
+        resolved: true,
+        accepted: accept
+      });
+    } catch (error) {
+      console.error('Error resolving message:', error);
+    }
+  };
+
   useEffect(() => {
     if (user && messagesData) {
-      const messages = Object.entries(messagesData).map(([id, data]: [string, any]) => ({
-        id,
-        ...data,
-      }));
+      const messages = Object.entries(messagesData)
+        .map(([id, data]: [string, any]) => ({
+          id,
+          ...data,
+        }))
+        .filter(message => !message.resolved); // Only show unresolved messages
       setUserMessages(messages);
     } else {
       setUserMessages([]);
@@ -367,8 +386,18 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
                   </div>
                   {/* Buttons placed below the message body, stacked vertically and aligned to the right */}
                   <div className="mt-3 flex gap-2 items-end">
-                    <button className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600">Accept</button>
-                    <button className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600">Decline</button>
+                    <button 
+                      onClick={() => handleMessageResolution(msg.id, true)} 
+                      className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600"
+                    >
+                      Accept
+                    </button>
+                    <button 
+                      onClick={() => handleMessageResolution(msg.id, false)}
+                      className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600"
+                    >
+                      Decline
+                    </button>
                   </div>
                 </div>
               );

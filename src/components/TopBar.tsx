@@ -62,10 +62,12 @@ const TopBar = () => {
 
   useEffect(() => {
     if (user && messagesData) {
-      const messages = Object.entries(messagesData).map(([id, data]: [string, any]) => ({
-        id,
-        ...data,
-      }));
+      const messages = Object.entries(messagesData)
+        .map(([id, data]: [string, any]) => ({
+          id,
+          ...data,
+        }))
+        .filter(message => !message.resolved); // Only show unresolved messages
       setUserMessages(messages);
     } else {
       setUserMessages([]);
