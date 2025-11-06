@@ -1,5 +1,6 @@
 export type Profile = {
   id: string;
+  profileUrl: string;
   name: string;
   email: string;
   major: string;

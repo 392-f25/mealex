@@ -31,6 +31,7 @@ function RouteComponent() {
 
   const emptyProfile: Profile = {
     id: user.uid,
+    profileUrl: user.photoURL || '',
     name: user.displayName || '',
     email: user.email || '',
     major: '',
@@ -53,6 +54,7 @@ function RouteComponent() {
       const database = getDatabase();
       const profileData = {
         id: user.uid,
+        profileUrl: user.photoURL || '',
         name: data.name,
         email: data.email,
         major: data.major,

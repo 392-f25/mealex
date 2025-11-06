@@ -139,6 +139,9 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
       <div className="max-w-4xl mx-auto px-5 py-12">
         {/* Profile Card */}
         <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
+          <div>
+            <img src={profile.profileUrl} alt="Profile" />
+          </div>
           {/* Name Section */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-slate-900">{profile.name}</h1>
