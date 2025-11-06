@@ -112,15 +112,17 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl">
-      <h2 className="text-2xl font-bold mb-2">
-        {isFirstTime ? 'Complete Your Profile' : 'Edit Your Profile'}
-      </h2>
-      {isFirstTime && (
-        <p className="text-sm text-slate-600 mb-6">
-          Tell us about yourself so other students can find you
-        </p>
-      )}
+    <div className="flex gap-8 w-full max-w-6xl mx-auto">
+      {/* Left section - Profile Form */}
+      <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
+        <h2 className="text-2xl font-bold mb-2">
+          {isFirstTime ? 'Complete Your Profile' : 'Edit Your Profile'}
+        </h2>
+        {isFirstTime && (
+          <p className="text-sm text-slate-600 mb-6">
+            Tell us about yourself so other students can find you
+          </p>
+        )}
 
       <form
         onSubmit={handleSubmit(onFormSubmit)}
@@ -326,6 +328,15 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
           {submitError}
         </div>
       )}
+      </div>
+
+      {/* Right section - Messages */}
+      <div className="w-96 bg-white rounded-lg shadow-xl p-8">
+        <h2 className="text-2xl font-bold mb-4">Messages</h2>
+        <div className="text-sm text-slate-600">
+          Your messages will appear here
+        </div>
+      </div>
     </div>
   );
 };
