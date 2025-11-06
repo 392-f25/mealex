@@ -29,12 +29,18 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
       setInvitations(invitationsList);
     }
   }, [showInvitations, userID, isOwnProfile, invitationData]);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     if (!copied) return;
     const t = setTimeout(() => setCopied(false), 2000);
     return () => clearTimeout(t);
   }, [copied]);
+
+  // Reset image error when profile changes
+  useEffect(() => {
+    setImageError(false);
+  }, [userID]);
 
   if (isLoading) {
     return (
@@ -141,37 +147,38 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
         <div className="rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
         
           {/* Profile Photo and Name Section */}
-        <div className="mb-8 flex items-start gap-6">
-          {/* Profile Photo */}
-          <div className="flex-shrink-0">
-            {profile.profileUrl ? (
-              <img
-                src={profile.profileUrl}
-                alt={`${profile.name}'s profile`}
-                className="h-24 w-24 rounded-full object-cover border-2 border-slate-200"
-                onError={(e) => {
-                  // Fallback if image fails to load
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                }}
-              />
-            ) : null}
-            {/* Fallback avatar */}
-            <div className={`h-24 w-24 rounded-full bg-slate-200 flex items-center justify-center border-2 border-slate-300 ${profile.profileUrl ? 'hidden' : ''}`}>
-              <span className="text-2xl font-bold text-slate-500">
-                {profile.name.charAt(0).toUpperCase()}
-              </span>
+          <div className="mb-8 flex items-start gap-6">
+            {/* Profile Photo */}
+            <div className="flex-shrink-0">
+              {profile.photoUrl && !imageError ? (
+                <img
+                  src={profile.photoUrl}
+                  alt={`${profile.name}'s profile`}
+                  className="h-24 w-24 rounded-full object-cover border-2 border-slate-200"
+                  onError={(e) => { {
+                    console.log('Image failed to load:', e);
+                    console.log('Image src was:', profile.photoUrl);
+                    setImageError(true);
+                  }}}
+                />
+              ) : (
+                /* Fallback avatar */
+                <div className="h-24 w-24 rounded-full bg-slate-200 flex items-center justify-center border-2 border-slate-300">
+                  <span className="text-2xl font-bold text-slate-500">
+                    {profile.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Name and Details */}
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold text-slate-900">{profile.name}</h1>
+              <p className="mt-2 text-slate-600">
+                {profile.major} • {profile.year}
+              </p>
             </div>
           </div>
-
-          {/* Name and Details */}
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold text-slate-900">{profile.name}</h1>
-            <p className="mt-2 text-slate-600">
-              {profile.major} • {profile.year}
-            </p>
-          </div>
-        </div>
 
           {/* Email Section */}
           <div className="mb-8 pb-8 border-b border-slate-200">
