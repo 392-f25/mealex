@@ -359,12 +359,14 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
             {userMessages.map((msg) => {
               const senderProfile = getProfileById(msg.sender);
               return (
-                <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
+                <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50">
                   <div>
                     <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
-                    <p className="text-xs text-gray-500">Wants to connect!</p>
+                    {/* Show the body of the invitation message. Provide a small fallback if empty. */}
+                    <p className="text-sm text-gray-700 mt-1">{msg.body ?? 'Wants to connect!'}</p>
                   </div>
-                  <div className="flex gap-2">
+                  {/* Buttons placed below the message body, stacked vertically and aligned to the right */}
+                  <div className="mt-3 flex gap-2 items-end">
                     <button className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600">Accept</button>
                     <button className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600">Decline</button>
                   </div>
