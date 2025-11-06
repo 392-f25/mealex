@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAuthState } from '../utilities/firebase';
 import { useDataPush } from '../utilities/firebase';
-import type { Message } from '../types/Message';
 
 interface InvitationFormProps {
   receiverId: string;
@@ -16,7 +15,8 @@ export default function InvitationForm({ receiverId }: InvitationFormProps) {
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !body.trim()) return;
-    const msg: Message = {
+
+    const msg = {
       sender: user.uid,
       receiver: receiverId,
       body: body.trim(),

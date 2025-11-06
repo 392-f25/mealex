@@ -52,9 +52,11 @@ const TopBar = () => {
 
   useEffect(() => {
     if (user && messagesData) {
-      const allMessages = Object.entries(messagesData).map(([id, msg]) => ({ id, ...(msg as Omit<Message, 'id'>) }));
-      const receivedMessages = allMessages.filter(msg => msg.receiver === user.uid);
-      setUserMessages(receivedMessages);
+      const messages = Object.entries(messagesData).map(([id, data]: [string, any]) => ({
+        id,
+        ...data,
+      }));
+      setUserMessages(messages);
     } else {
       setUserMessages([]);
     }
