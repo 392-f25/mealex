@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import ProfileForm from '../components/ProfileForm.tsx';
+import ProfileForm from '../components/UserProfile.tsx';
 import type { Profile } from '../types/Profile.ts';
 import { useAuthState } from '../utilities/firebase';
 import { useProfiles } from '../contexts/ProfilesContext';

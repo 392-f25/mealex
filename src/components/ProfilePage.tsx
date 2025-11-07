@@ -21,7 +21,7 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
   const [invitationData, isLoadingInvitations] = useDataQuery('/invitations');
   
   useEffect(() => {
-    if (showInvitations && isOwnProfile && invitationData) {
+    if (!isLoadingInvitations && showInvitations && isOwnProfile && invitationData) {
       const invitationsList = Object.entries(invitationData)
         .map(([id, data]: [string, any]) => ({ ...data, id }))
         .filter((invitation) => invitation.receiverId === userID)
