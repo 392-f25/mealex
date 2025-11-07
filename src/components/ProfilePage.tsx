@@ -155,11 +155,15 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
                   src={profile.photoUrl}
                   alt={`${profile.name}'s profile`}
                   className="h-24 w-24 rounded-full object-cover border-2 border-slate-200"
-                  onError={(e) => { {
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
                     console.log('Image failed to load:', e);
                     console.log('Image src was:', profile.photoUrl);
                     setImageError(true);
-                  }}}
+                  }}
+                  onLoad={() => {
+                    console.log('Image loaded successfully!');
+                  }}
                 />
               ) : (
                 /* Fallback avatar */
