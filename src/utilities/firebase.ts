@@ -81,6 +81,11 @@ export const useDataPush = (path: string): [(value:object) => void, string | und
   return [pushData, message, error];
 };
 
+// update a specific path with the provided value (wrapper around firebase update)
+export const updateValue = (path: string, value: object) => {
+  return update(ref(database, path), value);
+};
+
 export const signInWithGoogle = () => {
   signInWithPopup(auth, new GoogleAuthProvider());
 };

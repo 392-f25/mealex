@@ -3,7 +3,7 @@ import { type Profile } from '../types/Profile.ts';
 import { useState, useEffect } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAuthState, useDataQuery } from '../utilities/firebase.ts';
+import { useAuthState, useDataQuery, useDataUpdate } from '../utilities/firebase.ts';
 import { useProfiles } from '../contexts/ProfilesContext';
 import { type Message } from '../types/Message.ts';
 
@@ -51,6 +51,9 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   const incomingQueryPath = user ? `/invitations/${user.uid}/messages` : 'no-user-path';
   const [incomingMessagesData] = useDataQuery(incomingQueryPath);
   const [incomingUserMessages, setIncomingUserMessages] = useState<Message[]>([]);
+
+  // hook to update incoming messages (we will update individual message status using relative paths)
+  const [updateIncomingMessages] = useDataUpdate(incomingQueryPath);
 
   // Fetch all messages for outgoing filtering
   const allMessagesQueryPath = '/invitations';
@@ -405,14 +408,33 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
                 {incomingUserMessages.map((msg) => {
                   const senderProfile = getProfileById(msg.sender);
                   return (
-                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
+                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50">
                       <div>
                         <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
-                        <p className="text-xs text-gray-500">Wants to connect!</p>
+                        <p className="text-sm text-gray-700 mt-1">{msg.body ?? 'Wants to connect!'}</p>
                       </div>
-                      <div className="flex gap-2">
-                        <button className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600">Accept</button>
-                        <button className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600">Decline</button>
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          onClick={() => {
+                            // update message status to accepted
+                            updateIncomingMessages({ [`${msg.id}/status`]: 'accepted' });
+                            // optimistic UI update
+                            setIncomingUserMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'accepted' } : m));
+                          }}
+                          disabled={msg.status !== 'pending'}
+                          className={`px-2 py-1 text-xs rounded ${msg.status === 'accepted' ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600'}`}>
+                          {msg.status === 'accepted' ? 'Accepted' : 'Accept'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            // update message status to rejected
+                            updateIncomingMessages({ [`${msg.id}/status`]: 'rejected' });
+                            setIncomingUserMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'rejected' } : m));
+                          }}
+                          disabled={msg.status !== 'pending'}
+                          className={`px-2 py-1 text-xs rounded ${msg.status === 'rejected' ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600'}`}>
+                          {msg.status === 'rejected' ? 'Declined' : 'Decline'}
+                        </button>
                       </div>
                     </div>
                   );
