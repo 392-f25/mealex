@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuthState } from '../utilities/firebase';
 import { useDataPush } from '../utilities/firebase';
+import { type Message } from '../types/Message';
 
 interface InvitationFormProps {
   receiverId: string;
@@ -16,10 +17,12 @@ export default function InvitationForm({ receiverId }: InvitationFormProps) {
     e.preventDefault();
     if (!user || !body.trim()) return;
 
-    const msg = {
+    const msg:Omit<Message, 'id'> = {
       sender: user.uid,
       receiver: receiverId,
       body: body.trim(),
+      resolved: false,
+      status: 'pending',
     };
     sendInvitation(msg);
     setBody('');

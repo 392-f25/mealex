@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthState, useDataQuery } from '../utilities/firebase.ts';
-import { getDatabase } from 'firebase/database';
-import { ref, update } from 'firebase/database';
 import { useProfiles } from '../contexts/ProfilesContext';
 import { type Message } from '../types/Message.ts';
 
@@ -44,41 +42,51 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
   const [availabilityInput, setAvailabilityInput] = useState<string>('');
+  const [view, setView] = useState('incoming'); // 'incoming' or 'outgoing'
 
   const { user } = useAuthState();
   const { getProfileById } = useProfiles();
-  const database = getDatabase();
-  const queryPath = user ? `/invitations/${user.uid}/messages` : 'no-user-path';
-  const [messagesData] = useDataQuery(queryPath);
-  const [userMessages, setUserMessages] = useState<Message[]>([]);
+  
+  // Fetch incoming messages
+  const incomingQueryPath = user ? `/invitations/${user.uid}/messages` : 'no-user-path';
+  const [incomingMessagesData] = useDataQuery(incomingQueryPath);
+  const [incomingUserMessages, setIncomingUserMessages] = useState<Message[]>([]);
 
-  const handleMessageResolution = async (messageId: string, accept: boolean) => {
-    if (!user) return;
-    
-    try {
-      const messageRef = ref(database, `/invitations/${user.uid}/messages/${messageId}`);
-      await update(messageRef, {
-        resolved: true,
-        accepted: accept
-      });
-    } catch (error) {
-      console.error('Error resolving message:', error);
-    }
-  };
+  // Fetch all messages for outgoing filtering
+  const allMessagesQueryPath = '/invitations';
+  const [allMessagesData] = useDataQuery(allMessagesQueryPath);
+  const [outgoingUserMessages, setOutgoingUserMessages] = useState<Message[]>([]);
+
 
   useEffect(() => {
-    if (user && messagesData) {
-      const messages = Object.entries(messagesData)
-        .map(([id, data]: [string, any]) => ({
-          id,
-          ...data,
-        }))
-        .filter(message => !message.resolved); // Only show unresolved messages
-      setUserMessages(messages);
+    if (user && incomingMessagesData) {
+      const messages = Object.entries(incomingMessagesData).map(([id, data]: [string, any]) => ({
+        id,
+        ...data,
+      }));
+      setIncomingUserMessages(messages);
     } else {
-      setUserMessages([]);
+      setIncomingUserMessages([]);
     }
-  }, [user, messagesData]);
+  }, [user, incomingMessagesData]);
+
+  useEffect(() => {
+    if (user && allMessagesData) {
+      const allMessages: Message[] = [];
+      Object.values(allMessagesData).forEach((userMessages: any) => {
+        if (userMessages.messages) {
+          Object.entries(userMessages.messages).forEach(([id, data]: [string, any]) => {
+            allMessages.push({ id, ...data });
+          });
+        }
+      });
+      
+      const outgoing = allMessages.filter(msg => msg.sender === user.uid);
+      setOutgoingUserMessages(outgoing);
+    } else {
+      setOutgoingUserMessages([]);
+    }
+  }, [user, allMessagesData]);
 
   const {
     register,
@@ -372,41 +380,79 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
 
       {/* Right section - Messages */}
       <div className="w-96 bg-white rounded-lg shadow-xl p-8">
-        <h2 className="text-2xl font-bold mb-4">Invitations</h2>
-        {userMessages.length > 0 ? (
-          <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {userMessages.map((msg) => {
-              const senderProfile = getProfileById(msg.sender);
-              return (
-                <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50">
-                  <div>
-                    <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
-                    {/* Show the body of the invitation message. Provide a small fallback if empty. */}
-                    <p className="text-sm text-gray-700 mt-1">{msg.body ?? 'Wants to connect!'}</p>
-                  </div>
-                  {/* Buttons placed below the message body, stacked vertically and aligned to the right */}
-                  <div className="mt-3 flex gap-2 items-end">
-                    <button 
-                      onClick={() => handleMessageResolution(msg.id, true)} 
-                      className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600"
-                    >
-                      Accept
-                    </button>
-                    <button 
-                      onClick={() => handleMessageResolution(msg.id, false)}
-                      className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600"
-                    >
-                      Decline
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Invitations</h2>
+          <div className="flex gap-2 p-1 bg-gray-200 rounded-lg">
+            <button
+              onClick={() => setView('incoming')}
+              className={`px-3 py-1 text-sm font-semibold rounded-md ${view === 'incoming' ? 'bg-white shadow' : 'text-gray-600'}`}
+            >
+              Incoming
+            </button>
+            <button
+              onClick={() => setView('outgoing')}
+              className={`px-3 py-1 text-sm font-semibold rounded-md ${view === 'outgoing' ? 'bg-white shadow' : 'text-gray-600'}`}
+            >
+              Outgoing
+            </button>
           </div>
-        ) : (
-          <div className="text-sm text-slate-600">
-            You have no new invitations.
-          </div>
+        </div>
+
+        {view === 'incoming' && (
+          <>
+            {incomingUserMessages.length > 0 ? (
+              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+                {incomingUserMessages.map((msg) => {
+                  const senderProfile = getProfileById(msg.sender);
+                  return (
+                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
+                      <div>
+                        <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
+                        <p className="text-xs text-gray-500">Wants to connect!</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button className="px-2 py-1 text-xs rounded bg-green-500 text-white hover:bg-green-600">Accept</button>
+                        <button className="px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600">Decline</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-sm text-slate-600">
+                You have no new incoming invitations.
+              </div>
+            )}
+          </>
+        )}
+
+        {view === 'outgoing' && (
+          <>
+            {outgoingUserMessages.length > 0 ? (
+              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+                {outgoingUserMessages.map((msg) => {
+                  const receiverProfile = getProfileById(msg.receiver);
+                  return (
+                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
+                      <div>
+                        <p className="font-semibold text-sm">To: {receiverProfile?.name ?? 'Unknown User'}</p>
+                        <p className={`text-xs ${
+                          msg.status === 'accepted' ? 'text-green-500' :
+                          msg.status === 'rejected' ? 'text-red-500' : 'text-gray-500'
+                        }`}>
+                          Status: {msg.status.charAt(0).toUpperCase() + msg.status.slice(1)}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-sm text-slate-600">
+                You have no new outgoing invitations.
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

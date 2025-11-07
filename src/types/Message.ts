@@ -4,4 +4,5 @@ export type Message = {
   receiver: string;
   body: string;
   resolved: boolean;
+  status: 'pending' | 'accepted' | 'rejected';
 }
