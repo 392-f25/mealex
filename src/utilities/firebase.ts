@@ -45,6 +45,18 @@ const timestampMessage = (message: string) => (
   `${new Date().toLocaleString()}: ${message}`
 );
 
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    console.log("User logged in, photo:", user.photoURL);
+    if (!user.email?.endsWith('@u.northwestern.edu')) {
+      console.log("Invalid email domain detected, signing out");
+      await signOut(auth);
+    }
+  } else {
+    console.log("No user logged in");
+  }
+});
+
 // store a value under a path
 export const useDataUpdate = (path: string): [(value:object) => void, string | undefined, Error | undefined] => {
   const [message, setMessage] = useState("");
@@ -81,13 +93,22 @@ export const useDataPush = (path: string): [(value:object) => void, string | und
   return [pushData, message, error];
 };
 
-// update a specific path with the provided value (wrapper around firebase update)
-export const updateValue = (path: string, value: object) => {
-  return update(ref(database, path), value);
-};
-
-export const signInWithGoogle = () => {
-  signInWithPopup(auth, new GoogleAuthProvider());
+export const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, new GoogleAuthProvider());
+    const user = result.user;
+    
+    if (!user.email?.endsWith('@u.northwestern.edu')) {
+      await signOut(auth);
+      alert('Only Northwestern University (@u.northwestern.edu) emails are allowed to sign in.');
+      throw new Error('Invalid email domain');
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Sign in error:', error);
+    throw error;
+  }
 };
 
 const firebaseSignOut = () => signOut(auth);
