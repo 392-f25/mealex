@@ -21,7 +21,31 @@
     - add view all button which cirects to profile
     - Only shows name
 
+# 11/6 Swarm - Auxiliary Features - Ian, Sophie, Eddie
 
-2 small swarms of 3 worked well
+## Priorities
+- Profile photo
+  - Use Google account photo?
+- Northwestern email validation
+- Food preference
+- External links
+
+## Conclusion
+- Added pfp
+- Added northwestern email validation
 
 
+# TODO:
+ - Refactor UI to look pretty (maybe NU colors)
+ - Fix invitation display after accepted or displayed
+    - Sorting/order
+    - Separate resolved messages?
+ - Add linkedin (external links)
+ - No edit page by default (add additional button)
+ - Food preference
+ - ratings?
+
+# Reflections
+ - 2 small swarms of 3 worked well
+    - Didn't conflict
+    - better for equal talking opportunity
