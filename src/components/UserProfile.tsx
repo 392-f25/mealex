@@ -1,8 +1,11 @@
 import { useForm } from 'react-hook-form'
 import { type Profile } from '../types/Profile.ts';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuthState, useDataQuery, useDataUpdate } from '../utilities/firebase.ts';
+import { useProfiles } from '../contexts/ProfilesContext.tsx';
+import { type Message } from '../types/Message.ts';
 
 
 const currentYear = new Date().getFullYear();
@@ -39,6 +42,54 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
   const [availabilityInput, setAvailabilityInput] = useState<string>('');
+  const [view, setView] = useState('incoming'); // 'incoming' or 'outgoing'
+
+  const { user } = useAuthState();
+  const { getProfileById } = useProfiles();
+  
+  // Fetch incoming messages
+  const incomingQueryPath = user ? `/invitations/${user.uid}/messages` : 'no-user-path';
+  const [incomingMessagesData] = useDataQuery(incomingQueryPath);
+  const [incomingUserMessages, setIncomingUserMessages] = useState<Message[]>([]);
+
+  // hook to update incoming messages (we will update individual message status using relative paths)
+  const [updateIncomingMessages] = useDataUpdate(incomingQueryPath);
+
+  // Fetch all messages for outgoing filtering
+  const allMessagesQueryPath = '/invitations';
+  const [allMessagesData] = useDataQuery(allMessagesQueryPath);
+  const [outgoingUserMessages, setOutgoingUserMessages] = useState<Message[]>([]);
+
+
+  useEffect(() => {
+    if (user && incomingMessagesData) {
+      const messages = Object.entries(incomingMessagesData).map(([id, data]: [string, any]) => ({
+        id,
+        ...data,
+      }));
+      setIncomingUserMessages(messages);
+    } else {
+      setIncomingUserMessages([]);
+    }
+  }, [user, incomingMessagesData]);
+
+  useEffect(() => {
+    if (user && allMessagesData) {
+      const allMessages: Message[] = [];
+      Object.values(allMessagesData).forEach((userMessages: any) => {
+        if (userMessages.messages) {
+          Object.entries(userMessages.messages).forEach(([id, data]: [string, any]) => {
+            allMessages.push({ id, ...data });
+          });
+        }
+      });
+      
+      const outgoing = allMessages.filter(msg => msg.sender === user.uid);
+      setOutgoingUserMessages(outgoing);
+    } else {
+      setOutgoingUserMessages([]);
+    }
+  }, [user, allMessagesData]);
 
   const {
     register,
@@ -112,15 +163,17 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl">
-      <h2 className="text-2xl font-bold mb-2">
-        {isFirstTime ? 'Complete Your Profile' : 'Edit Your Profile'}
-      </h2>
-      {isFirstTime && (
-        <p className="text-sm text-slate-600 mb-6">
-          Tell us about yourself so other students can find you
-        </p>
-      )}
+    <div className="flex gap-8 w-full max-w-6xl mx-auto">
+      {/* Left section - Profile Form */}
+      <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
+        <h2 className="text-2xl font-bold mb-2">
+          {isFirstTime ? 'Complete Your Profile' : 'Edit Your Profile'}
+        </h2>
+        {isFirstTime && (
+          <p className="text-sm text-slate-600 mb-6">
+            Tell us about yourself so other students can find you
+          </p>
+        )}
 
       <form
         onSubmit={handleSubmit(onFormSubmit)}
@@ -326,6 +379,104 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
           {submitError}
         </div>
       )}
+      </div>
+
+      {/* Right section - Messages */}
+      <div className="w-96 bg-white rounded-lg shadow-xl p-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Invitations</h2>
+          <div className="flex gap-2 p-1 bg-gray-200 rounded-lg">
+            <button
+              onClick={() => setView('incoming')}
+              className={`px-3 py-1 text-sm font-semibold rounded-md ${view === 'incoming' ? 'bg-white shadow' : 'text-gray-600'}`}
+            >
+              Incoming
+            </button>
+            <button
+              onClick={() => setView('outgoing')}
+              className={`px-3 py-1 text-sm font-semibold rounded-md ${view === 'outgoing' ? 'bg-white shadow' : 'text-gray-600'}`}
+            >
+              Outgoing
+            </button>
+          </div>
+        </div>
+
+        {view === 'incoming' && (
+          <>
+            {incomingUserMessages.length > 0 ? (
+              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+                {incomingUserMessages.map((msg) => {
+                  const senderProfile = getProfileById(msg.sender);
+                  return (
+                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
+                        <p className="text-sm text-gray-700 mt-1">{msg.body ?? 'Wants to connect!'}</p>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <button
+                          onClick={() => {
+                            // update message status to accepted
+                            updateIncomingMessages({ [`${msg.id}/status`]: 'accepted' });
+                            // optimistic UI update
+                            setIncomingUserMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'accepted' } : m));
+                          }}
+                          disabled={msg.status !== 'pending'}
+                          className={`px-2 py-1 text-xs rounded ${msg.status === 'accepted' ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600'}`}>
+                          {msg.status === 'accepted' ? 'Accepted' : 'Accept'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            // update message status to rejected
+                            updateIncomingMessages({ [`${msg.id}/status`]: 'rejected' });
+                            setIncomingUserMessages(prev => prev.map(m => m.id === msg.id ? { ...m, status: 'rejected' } : m));
+                          }}
+                          disabled={msg.status !== 'pending'}
+                          className={`px-2 py-1 text-xs rounded ${msg.status === 'rejected' ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600'}`}>
+                          {msg.status === 'rejected' ? 'Declined' : 'Decline'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-sm text-slate-600">
+                You have no new incoming invitations.
+              </div>
+            )}
+          </>
+        )}
+
+        {view === 'outgoing' && (
+          <>
+            {outgoingUserMessages.length > 0 ? (
+              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+                {outgoingUserMessages.map((msg) => {
+                  const receiverProfile = getProfileById(msg.receiver);
+                  return (
+                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
+                      <div>
+                        <p className="font-semibold text-sm">To: {receiverProfile?.name ?? 'Unknown User'}</p>
+                        <p className={`text-xs ${
+                          msg.status === 'accepted' ? 'text-green-500' :
+                          msg.status === 'rejected' ? 'text-red-500' : 'text-gray-500'
+                        }`}>
+                          Status: {msg.status.charAt(0).toUpperCase() + msg.status.slice(1)}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-sm text-slate-600">
+                You have no new outgoing invitations.
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
