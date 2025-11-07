@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthState, useDataQuery, useDataUpdate } from '../utilities/firebase.ts';
-import { useProfiles } from '../contexts/ProfilesContext';
+import { useProfiles } from '../contexts/ProfilesContext.tsx';
 import { type Message } from '../types/Message.ts';
 
 
