@@ -26,7 +26,15 @@ export default function ProfileCard({ profile }: Props) {
             src={profile.photoUrl}
             alt={`${profile.name}'s profile`}
             className="h-12 w-12 rounded-full object-cover border-2 border-slate-200"
-            onError={() => setImageError(true)}
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              console.log('Image failed to load:', e);
+              console.log('Image src was:', profile.photoUrl);
+              setImageError(true);
+            }}
+            onLoad={() => {
+              console.log('Image loaded successfully!');
+            }}
           />
         ) : (
           /* Fallback avatar */
