@@ -5,8 +5,8 @@ import { ArrowRight } from 'lucide-react';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isInitialLoading } = useAuthState();
-  const isFirstTime = useCheckFirstTimeUser(isAuthenticated ? undefined : '');
+  const { user, isAuthenticated, isInitialLoading } = useAuthState();
+  const isFirstTime = useCheckFirstTimeUser(user?.uid ?? "");
 
   // Navigate away from landing once authenticated
   useEffect(() => {

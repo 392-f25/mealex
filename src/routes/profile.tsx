@@ -65,8 +65,8 @@ function RouteComponent() {
       };
 
       await set(ref(database, `/profiles/${user.uid}`), profileData);
-      console.log('Profile saved successfully');
-      navigate({ to: '/' });
+      // console.log('Profile saved successfully');
+      navigate({ to: '/landing' });
     } catch (err) {
       console.error('Failed to save profile:', err);
       throw err;

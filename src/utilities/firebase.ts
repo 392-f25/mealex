@@ -126,7 +126,7 @@ export const addAuthStateListener = (fn: NextOrObserver<User>) => (
 );
 
 export const useAuthState = (): AuthState => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState(auth.currentUser)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
   const isAuthenticated = !!user;
 
@@ -140,9 +140,9 @@ export const useAuthState = (): AuthState => {
   return {user, isAuthenticated, isInitialLoading };
 };
 
-export const useCheckFirstTimeUser = (userId: string | undefined): boolean => {
+export const useCheckFirstTimeUser = (userId: string): boolean => {
   const [isFirstTime, setIsFirstTime] = useState(true);
-  const [data] = useDataQuery(userId ? `/profiles/${userId}` : '/profiles');
+  const [data] = useDataQuery(`/profiles/${userId}`);
 
   useEffect(() => {
     if (!userId) {
