@@ -23,6 +23,7 @@ export default function InvitationForm({ receiverId }: InvitationFormProps) {
       body: body.trim(),
       resolved: false,
       status: 'pending',
+      timestamp: new Date().toLocaleString(),
     };
     sendInvitation(msg);
     setBody('');

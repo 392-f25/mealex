@@ -488,6 +488,9 @@ const ProfileForm = ({
                               <p className="text-sm text-gray-700 mt-1">
                                 {msg.body ?? 'Wants to connect!'}
                               </p>
+                              <p className="text-xs text-slate-500 mt-1">
+                                {msg.timestamp || 'No timestamp'}
+                              </p>
                             </div>
                             <div className="mt-3 flex gap-2">
                               <button
@@ -574,6 +577,9 @@ const ProfileForm = ({
                               <p className="text-sm text-gray-700 mt-1">
                                 {msg.body ?? 'Wanted to connect!'}
                               </p>
+                              <p className="text-xs text-slate-500 mt-1">
+                                {msg.timestamp || 'No timestamp'}
+                              </p>
                               <p
                                 className={`text-sm mt-2 ${msg.status === 'accepted' ? 'text-green-600' : 'text-red-600'}`}
                               >
@@ -624,7 +630,9 @@ const ProfileForm = ({
                               <p className="text-sm text-gray-700 mt-1">
                                 {msg.body ?? 'Wanted to connect!'}
                               </p>
-
+                              <p className="text-xs text-slate-500 mt-1">
+                                {msg.timestamp || 'No timestamp'}
+                              </p>
                               <p className="text-xs text-gray-500">
                                 Status: Pending
                               </p>
@@ -666,6 +674,12 @@ const ProfileForm = ({
                               <p className="font-semibold text-sm">
                                 To: {receiverProfile?.name ?? 'Unknown User'}
                               </p>
+                              <p className="text-sm text-gray-700 mt-1">
+                                {msg.body ?? 'Wanted to connect!'}
+                              </p>
+                              <p className="text-xs text-slate-500 mt-1">
+                                {msg.timestamp || 'No timestamp'}
+                              </p>
                               <p
                                 className={`text-xs mt-1 ${
                                   msg.status === 'accepted'
@@ -673,9 +687,6 @@ const ProfileForm = ({
                                     : 'text-red-600'
                                 }`}
                               >
-                                <p className="text-sm text-gray-700 mt-1">
-                                  {msg.body ?? 'Wanted to connect!'}
-                                </p>
                                 Status:{' '}
                                 {msg.status === 'accepted'
                                   ? 'Accepted'
