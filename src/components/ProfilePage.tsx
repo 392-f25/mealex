@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useProfiles } from "../contexts/ProfilesContext";
-import { ArrowLeft, Copy, CheckCircle, MessageCircle } from "lucide-react";
+import { ArrowLeft, Copy, CheckCircle, MessageCircle, ExternalLink } from "lucide-react";
 import InvitationForm from "./InvitationForm";
 import { useAuthState, useDataQuery } from "../utilities/firebase";
 
@@ -187,35 +187,53 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
           {/* Email Section */}
           <div className="mb-8 pb-8 border-b border-slate-200">
             <h2 className="mb-3 text-sm font-semibold text-slate-700">Contact</h2>
-            <div className="flex items-center gap-3">
-              <span className="text-slate-900">{profile.email}</span>
-              <div className="flex gap-2">
-                <button
-                  onClick={copyEmail}
-                  className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer"
-                >
-                  {copied ? (
-                    <>
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <span className="text-green-600">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-4 w-4" />
-                      Copy Email
-                    </>
-                  )}
-                </button>
-                {isOwnProfile && (
+            <div className="space-y-3">
+              {/* Email */}
+              <div className="flex items-center gap-3">
+                <span className="text-slate-900">{profile.email}</span>
+                <div className="flex gap-2">
                   <button
-                    onClick={() => setShowInvitations(true)}
-                    className="flex items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100 cursor-pointer"
+                    onClick={copyEmail}
+                    className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer"
                   >
-                    <MessageCircle className="h-4 w-4" />
-                    View Invitations
+                    {copied ? (
+                      <>
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="text-green-600">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Copy Email
+                      </>
+                    )}
                   </button>
-                )}
+                  {isOwnProfile && (
+                    <button
+                      onClick={() => setShowInvitations(true)}
+                      className="flex items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100 cursor-pointer"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      View Invitations
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {/* LinkedIn URL */}
+              {profile.linkedinUrl && (
+                <div className="flex items-center gap-3">
+                  <a
+                    href={profile.linkedinUrl.startsWith('http') ? profile.linkedinUrl : `https://${profile.linkedinUrl}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition font-medium"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    View LinkedIn Profile
+                  </a>
+                </div>
+              )}
             </div>
           </div>
 

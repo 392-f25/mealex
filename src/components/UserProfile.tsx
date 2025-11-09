@@ -13,6 +13,7 @@ const currentYear = new Date().getFullYear();
 // Zod schema for profile validation
 const profileSchema = z.object({
   id: z.string().min(1, 'ID is required'),
+  photoUrl: z.string().optional().or(z.literal('')),
   name: z.string().min(1, 'Name is required').min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   major: z.string().min(1, 'Major is required'),
@@ -27,6 +28,10 @@ const profileSchema = z.object({
   bio: z.string().min(1, 'Bio is required').max(500, 'Bio must be less than 500 characters'),
   interests: z.array(z.string()).min(1, 'Add at least one interest').max(5, 'Maximum 5 interests allowed'),
   availability: z.array(z.string()).min(1, 'Add at least one availability'),
+  linkedinUrl: z.string().optional().or(z.literal('')).refine((val) => {
+    if (!val || val === '') return true;
+    return val.includes('linkedin.com') || val.startsWith('https://linkedin.com') || val.startsWith('https://www.linkedin.com');
+  }, { message: 'Please enter a valid LinkedIn URL' }),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -100,6 +105,7 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
   } = useForm<ProfileFormData>({
     defaultValues: profile ? {
       id: profile.id,
+      photoUrl: profile.photoUrl || '',
       name: profile.name,
       email: profile.email,
       major: profile.major,
@@ -107,6 +113,7 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
       bio: profile.bio,
       interests: profile.interests || [],
       availability: profile.availability || [],
+      linkedinUrl: profile.linkedinUrl || '',
     } : undefined,
     mode: 'onChange',
     resolver: zodResolver(profileSchema),
@@ -155,6 +162,7 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
     console.log('Form submitted: ', data);
     try {
       if (onSubmit) {
+        // ProfileFormData now matches Profile type completely
         await onSubmit(data as Profile, isDirty);
       }
     } catch (error) {
@@ -181,6 +189,8 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
       >
         {/* Hidden ID field */}
         <input type="hidden" {...register('id')} />
+        {/* Hidden photoUrl field */}
+        <input type="hidden" {...register('photoUrl')} />
 
         <label className="block">
           <span className="text-sm font-semibold text-gray-700">Full Name</span>
@@ -257,6 +267,24 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
           {errors.bio && (
             <span className="text-red-500 text-sm mt-1 block">
               {errors.bio.message}
+            </span>
+          )}
+        </label>
+
+        <label className="block">
+          <span className="text-sm font-semibold text-gray-700">LinkedIn Profile (Optional)</span>
+          <input
+            type="url"
+            {...register('linkedinUrl')}
+            className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+            placeholder="https://www.linkedin.com/in/your-profile"
+          />
+          <span className="text-xs text-gray-500 mt-1 block">
+            Add your LinkedIn profile to help others connect with you professionally
+          </span>
+          {errors.linkedinUrl && (
+            <span className="text-red-500 text-sm mt-1 block">
+              {errors.linkedinUrl.message}
             </span>
           )}
         </label>
