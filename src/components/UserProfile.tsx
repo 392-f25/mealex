@@ -403,11 +403,17 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
 
         {view === 'incoming' && (
           <>
-            {incomingUserMessages.length > 0 ? (
-              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
-                {incomingUserMessages.map((msg) => {
-                  const senderProfile = getProfileById(msg.sender);
-                  return (
+            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+              {/* Pending Invitations */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Pending Invitations</h3>
+                {incomingUserMessages.filter(msg => !msg.status || msg.status === 'pending').length > 0 ? (
+                  <div className="space-y-2">
+                    {incomingUserMessages
+                      .filter(msg => !msg.status || msg.status === 'pending')
+                      .map((msg) => {
+                        const senderProfile = getProfileById(msg.sender);
+                        return (
                     <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50">
                       <div>
                         <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
@@ -439,41 +445,105 @@ const ProfileForm = ({ profile, onCancel, onSubmit, isFirstTime = false }: Profi
                     </div>
                   );
                 })}
+                </div>
+              ) : (
+                <div className="text-sm text-slate-600">
+                  You have no pending invitations.
+                </div>
+              )}
               </div>
-            ) : (
-              <div className="text-sm text-slate-600">
-                You have no new incoming invitations.
+
+              {/* Resolved Invitations */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Past Invitations</h3>
+                {incomingUserMessages.filter(msg => msg.status === 'accepted' || msg.status === 'rejected').length > 0 ? (
+                  <div className="space-y-2">
+                    {incomingUserMessages
+                      .filter(msg => msg.status === 'accepted' || msg.status === 'rejected')
+                      .map((msg) => {
+                        const senderProfile = getProfileById(msg.sender);
+                        return (
+                          <div key={msg.id} className="p-3 border rounded-lg bg-gray-50">
+                            <div>
+                              <p className="font-semibold text-sm">{senderProfile?.name ?? 'Unknown User'}</p>
+                              <p className="text-sm text-gray-700 mt-1">{msg.body ?? 'Wanted to connect!'}</p>
+                              <p className={`text-sm mt-2 ${msg.status === 'accepted' ? 'text-green-600' : 'text-red-600'}`}>
+                                {msg.status === 'accepted' ? 'Accepted' : 'Declined'}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                ) : (
+                  <div className="text-sm text-slate-600">
+                    No past invitations.
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </>
         )}
 
         {view === 'outgoing' && (
           <>
-            {outgoingUserMessages.length > 0 ? (
-              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
-                {outgoingUserMessages.map((msg) => {
-                  const receiverProfile = getProfileById(msg.receiver);
-                  return (
-                    <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50 flex justify-between items-center">
-                      <div>
-                        <p className="font-semibold text-sm">To: {receiverProfile?.name ?? 'Unknown User'}</p>
-                        <p className={`text-xs ${
-                          msg.status === 'accepted' ? 'text-green-500' :
-                          msg.status === 'rejected' ? 'text-red-500' : 'text-gray-500'
-                        }`}>
-                          Status: {msg.status.charAt(0).toUpperCase() + msg.status.slice(1)}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
+            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+              {/* Pending Outgoing Invitations */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Pending Invitations</h3>
+                {outgoingUserMessages.filter(msg => !msg.status || msg.status === 'pending').length > 0 ? (
+                  <div className="space-y-2">
+                    {outgoingUserMessages
+                      .filter(msg => !msg.status || msg.status === 'pending')
+                      .map((msg) => {
+                        const receiverProfile = getProfileById(msg.receiver);
+                        return (
+                          <div key={msg.id} className="p-3 border rounded-lg hover:bg-gray-50">
+                            <div>
+                              <p className="font-semibold text-sm">To: {receiverProfile?.name ?? 'Unknown User'}</p>
+                              <p className="text-xs text-gray-500">Status: Pending</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                ) : (
+                  <div className="text-sm text-slate-600">
+                    You have no pending outgoing invitations.
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="text-sm text-slate-600">
-                You have no new outgoing invitations.
+
+              {/* Resolved Outgoing Invitations */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Past Invitations</h3>
+                {outgoingUserMessages.filter(msg => msg.status === 'accepted' || msg.status === 'rejected').length > 0 ? (
+                  <div className="space-y-2">
+                    {outgoingUserMessages
+                      .filter(msg => msg.status === 'accepted' || msg.status === 'rejected')
+                      .map((msg) => {
+                        const receiverProfile = getProfileById(msg.receiver);
+                        return (
+                          <div key={msg.id} className="p-3 border rounded-lg bg-gray-50">
+                            <div>
+                              <p className="font-semibold text-sm">To: {receiverProfile?.name ?? 'Unknown User'}</p>
+                              <p className={`text-xs mt-1 ${
+                                msg.status === 'accepted' ? 'text-green-600' : 'text-red-600'
+                              }`}>
+                                Status: {msg.status === 'accepted' ? 'Accepted' : 'Declined'}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                ) : (
+                  <div className="text-sm text-slate-600">
+                    No past outgoing invitations.
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </>
         )}
       </div>
