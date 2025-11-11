@@ -43,6 +43,7 @@ const profileSchema = z.object({
     .array(z.string())
     .min(1, 'Add at least one interest')
     .max(5, 'Maximum 5 interests allowed'),
+  mealPreference: z.array(z.string()).min(1, 'Add at least one meal preference'),
   availability: z.array(z.string()).min(1, 'Add at least one availability'),
   linkedinUrl: z.string().optional().or(z.literal('')).refine((val) => {
     if (!val || val === '') return true;
@@ -68,6 +69,7 @@ const ProfileForm = ({
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
   const [availabilityInput, setAvailabilityInput] = useState<string>('');
+  const [mealPreferenceInput, setMealPreferenceInput] = useState<string>('');
   const [view, setView] = useState('incoming'); // 'incoming' or 'outgoing'
 
   const { user } = useAuthState();
@@ -143,6 +145,7 @@ const ProfileForm = ({
           bio: profile.bio,
           interests: profile.interests || [],
           availability: profile.availability || [],
+          mealPreference: profile.mealPreference || [],
           linkedinUrl: profile.linkedinUrl || '',
         }
       : undefined,
@@ -152,6 +155,7 @@ const ProfileForm = ({
 
   const interests = watch('interests');
   const availability = watch('availability');
+  const mealPreference = watch('mealPreference');
 
   const handleAddTag = () => {
     if (tagInput.trim() && !interests.includes(tagInput.trim())) {
@@ -166,6 +170,26 @@ const ProfileForm = ({
     setValue(
       'interests',
       interests.filter((tag) => tag !== tagToRemove),
+      { shouldDirty: true }
+    );
+  };
+
+  const handleAddMealPreference = () => {
+    if (
+      mealPreferenceInput.trim() &&
+      !mealPreference.includes(mealPreferenceInput.trim())
+    ) {
+      setValue('mealPreference', [...mealPreference, mealPreferenceInput.trim()], {
+        shouldDirty: true,
+      });
+      setMealPreferenceInput('');
+    }
+  };
+
+  const handleRemoveMealPreference = (preferenceToRemove: string) => {
+    setValue(
+      'mealPreference',
+      mealPreference.filter((pref) => pref !== preferenceToRemove),
       { shouldDirty: true }
     );
   };
@@ -194,6 +218,15 @@ const ProfileForm = ({
     if (e.key === 'Enter') {
       e.preventDefault();
       handleAddTag();
+    }
+  };
+
+  const handleMealPreferenceKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddMealPreference();
     }
   };
 
@@ -293,7 +326,7 @@ const ProfileForm = ({
 
         <label className="block">
           <span className="text-sm font-semibold text-gray-700">Interests</span>
-          <div className="flex gap-2 mt-1">
+        
             <input
               type="text"
               {...register('major')}
@@ -377,6 +410,56 @@ const ProfileForm = ({
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
                       className="text-blue-600 hover:text-blue-800 font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-semibold text-gray-700">
+              Meal Preferences
+            </span>
+            <div className="flex gap-2 mt-1">
+              <input
+                type="text"
+                value={mealPreferenceInput}
+                onChange={(e) => setMealPreferenceInput(e.target.value)}
+                onKeyPress={handleMealPreferenceKeyPress}
+                className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                placeholder="e.g. Vegetarian, Vegan, Gluten-free"
+              />
+              <button
+                type="button"
+                onClick={handleAddMealPreference}
+                className="px-4 py-2 rounded-lg bg-purple-500 text-white font-medium hover:bg-purple-600 transition"
+              >
+                Add
+              </button>
+            </div>
+            {errors.mealPreference && (
+              <span className="text-red-500 text-sm mt-1 block">
+                {errors.mealPreference.message}
+              </span>
+            )}
+            <div className="text-xs text-gray-500 mt-1">
+              Add your preferred meal types
+            </div>
+            {mealPreference.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {mealPreference.map((pref) => (
+                  <div
+                    key={pref}
+                    className="flex items-center gap-2 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium"
+                  >
+                    {pref}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMealPreference(pref)}
+                      className="text-purple-600 hover:text-purple-800 font-bold"
                     >
                       ×
                     </button>

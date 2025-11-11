@@ -260,6 +260,25 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
             </div>
           )}
 
+          {/* Meal Preference Section */}
+          {profile.mealPreference && profile.mealPreference.length > 0 && (
+            <div className="mb-8 pb-8 border-b border-slate-200">
+              <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                Meal Preference
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {profile.mealPreference.map((preference) => (
+                  <span
+                    key={preference}
+                    className="rounded-full bg-purple-50 px-3 py-1 text-sm font-medium text-purple-700 border border-purple-200"
+                  >
+                    {preference}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Availability Section */}
           {profile.availability && profile.availability.length > 0 && (
             <div>
