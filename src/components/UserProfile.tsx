@@ -293,7 +293,6 @@ const ProfileForm = ({
 
         <label className="block">
           <span className="text-sm font-semibold text-gray-700">Interests</span>
-          <div className="flex gap-2 mt-1">
             <input
               type="text"
               {...register('major')}
