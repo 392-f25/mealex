@@ -39,6 +39,7 @@ function RouteComponent() {
     bio: '',
     interests: [],
     availability: [],
+    linkedinUrl: '',
   };
 
   const handleCancel = () => {
@@ -62,11 +63,12 @@ function RouteComponent() {
         bio: data.bio,
         interests: data.interests,
         availability: data.availability,
+        linkedinUrl: data.linkedinUrl || '',
       };
 
       await set(ref(database, `/profiles/${user.uid}`), profileData);
       // console.log('Profile saved successfully');
-      navigate({ to: '/landing' });
+      navigate({ to: '/' });
     } catch (err) {
       console.error('Failed to save profile:', err);
       throw err;

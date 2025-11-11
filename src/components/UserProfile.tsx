@@ -44,6 +44,10 @@ const profileSchema = z.object({
     .min(1, 'Add at least one interest')
     .max(5, 'Maximum 5 interests allowed'),
   availability: z.array(z.string()).min(1, 'Add at least one availability'),
+  linkedinUrl: z.string().optional().or(z.literal('')).refine((val) => {
+    if (!val || val === '') return true;
+    return val.includes('linkedin.com') || val.startsWith('https://linkedin.com') || val.startsWith('https://www.linkedin.com');
+  }, { message: 'Please enter a valid LinkedIn URL' }),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -139,6 +143,7 @@ const ProfileForm = ({
           bio: profile.bio,
           interests: profile.interests || [],
           availability: profile.availability || [],
+          linkedinUrl: profile.linkedinUrl || '',
         }
       : undefined,
     mode: 'onChange',
@@ -205,6 +210,7 @@ const ProfileForm = ({
     console.log('Form submitted: ', data);
     try {
       if (onSubmit) {
+        // ProfileFormData now matches Profile type completely
         await onSubmit(data as Profile, isDirty);
       }
     } catch (error) {
@@ -267,8 +273,27 @@ const ProfileForm = ({
             )}
           </label>
 
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">Major</span>
+        <label className="block">
+          <span className="text-sm font-semibold text-gray-700">LinkedIn Profile (Optional)</span>
+          <input
+            type="url"
+            {...register('linkedinUrl')}
+            className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+            placeholder="https://www.linkedin.com/in/your-profile"
+          />
+          <span className="text-xs text-gray-500 mt-1 block">
+            Add your LinkedIn profile to help others connect with you professionally
+          </span>
+          {errors.linkedinUrl && (
+            <span className="text-red-500 text-sm mt-1 block">
+              {errors.linkedinUrl.message}
+            </span>
+          )}
+        </label>
+
+        <label className="block">
+          <span className="text-sm font-semibold text-gray-700">Interests</span>
+          <div className="flex gap-2 mt-1">
             <input
               type="text"
               {...register('major')}
