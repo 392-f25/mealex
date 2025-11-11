@@ -5,4 +5,5 @@ export type Message = {
   body: string;
   resolved: boolean;
   status: 'pending' | 'accepted' | 'rejected';
+  timestamp: string;
 }

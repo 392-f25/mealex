@@ -114,7 +114,7 @@ const TopBar = () => {
           onClick={handleManageProfile}
           className="rounded-lg border border-blue-600 bg-transparent px-3 py-2 text-sm font-semibold text-blue-600 transition cursor-pointer hover:bg-blue-100"
         >
-          Manage
+          Profile
         </button>
         <button
           onClick={signOut}

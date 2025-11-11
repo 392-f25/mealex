@@ -41,7 +41,7 @@ export const useDataQuery = (path: string): [Record<string, Profile> | undefined
   return [ data, loading, error ];
 };
 
-const timestampMessage = (message: string) => (
+export const timestampMessage = (message: string) => (
   `${new Date().toLocaleString()}: ${message}`
 );
 
