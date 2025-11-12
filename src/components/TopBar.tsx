@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { signOut, useAuthState, useDataQuery } from '../utilities/firebase';
 import { House, MessageSquare } from 'lucide-react';
 import { type Message } from '../types/Message';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect} from 'react';
 
 const TopBar = () => {
   const navigate = useNavigate();

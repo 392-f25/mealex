@@ -66,10 +66,10 @@ const InvitationPage = () => {
   }, [user, allMessagesData]);
 
   return (
-      <div className="flex gap-8 w-full max-w-6xl mx-auto">
-      <div className="w-96 bg-white rounded-lg shadow-xl p-8">
+    <div className="flex gap-8 w-full justify-center mx-auto">
+      <div className="w-full bg-white rounded-lg shadow-xl p-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Invitations</h2>
+          <h2 className="text-2xl font-bold">Incoming Invitations</h2>
         </div>
         <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
           {/* Pending Invitations */}
@@ -209,7 +209,11 @@ const InvitationPage = () => {
           </div>
         </div>
       </div>
-      <div className="w-96 bg-white rounded-lg shadow-xl p-8">
+
+      <div className="w-full bg-white rounded-lg shadow-xl p-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Sent Invitations</h2>
+        </div>
         <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
           {/* Pending Outgoing Invitations */}
           <div>

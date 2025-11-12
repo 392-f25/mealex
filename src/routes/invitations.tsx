@@ -8,8 +8,10 @@ export const Route = createFileRoute('/invitations')({
 })
 
 function RouteComponent() {
-  return (<StrictMode>
-    <TopBar/><InvitationPage />
-  </StrictMode>)
-
+  return (
+    <StrictMode>
+      <TopBar/>
+      <InvitationPage />
+    </StrictMode>
+  );
 }
