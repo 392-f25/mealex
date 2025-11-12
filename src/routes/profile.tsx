@@ -40,6 +40,7 @@ function RouteComponent() {
     bio: '',
     interests: [],
     availability: [],
+    mealPreference: [],
     linkedinUrl: '',
   };
 
@@ -63,6 +64,7 @@ function RouteComponent() {
         year: data.year,
         bio: data.bio,
         interests: data.interests,
+        mealPreference: data.mealPreference,
         availability: data.availability,
         linkedinUrl: data.linkedinUrl || '',
       };

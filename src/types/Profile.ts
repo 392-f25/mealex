@@ -8,5 +8,6 @@ export type Profile = {
   bio: string;
   interests: string[];
   availability: string[];
+  mealPreference: string[];
   linkedinUrl?: string;
 }
