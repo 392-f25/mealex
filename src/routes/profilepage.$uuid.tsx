@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ProfilePage from '../components/ProfilePage.tsx'
 import { StrictMode } from 'react'
-import TopBar from '../components/TopBar.tsx'
 
 function ProfilePageRoute() {
   const params = Route.useParams()
@@ -12,7 +11,6 @@ function ProfilePageRoute() {
   
   return (
     <StrictMode>
-      <TopBar />
       <ProfilePage userID={params.uuid}/>
     </StrictMode>
   );

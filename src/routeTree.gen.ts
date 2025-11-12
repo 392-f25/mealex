@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LandingRouteImport } from './routes/landing'
-import { Route as InvitationsRouteImport } from './routes/invitations'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfilepageUuidRouteImport } from './routes/profilepage.$uuid'
 
@@ -23,11 +22,6 @@ const ProfileRoute = ProfileRouteImport.update({
 const LandingRoute = LandingRouteImport.update({
   id: '/landing',
   path: '/landing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InvitationsRoute = InvitationsRouteImport.update({
-  id: '/invitations',
-  path: '/invitations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,14 +37,12 @@ const ProfilepageUuidRoute = ProfilepageUuidRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/invitations': typeof InvitationsRoute
   '/landing': typeof LandingRoute
   '/profile': typeof ProfileRoute
   '/profilepage/$uuid': typeof ProfilepageUuidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/invitations': typeof InvitationsRoute
   '/landing': typeof LandingRoute
   '/profile': typeof ProfileRoute
   '/profilepage/$uuid': typeof ProfilepageUuidRoute
@@ -58,33 +50,20 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/invitations': typeof InvitationsRoute
   '/landing': typeof LandingRoute
   '/profile': typeof ProfileRoute
   '/profilepage/$uuid': typeof ProfilepageUuidRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/invitations'
-    | '/landing'
-    | '/profile'
-    | '/profilepage/$uuid'
+  fullPaths: '/' | '/landing' | '/profile' | '/profilepage/$uuid'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/invitations' | '/landing' | '/profile' | '/profilepage/$uuid'
-  id:
-    | '__root__'
-    | '/'
-    | '/invitations'
-    | '/landing'
-    | '/profile'
-    | '/profilepage/$uuid'
+  to: '/' | '/landing' | '/profile' | '/profilepage/$uuid'
+  id: '__root__' | '/' | '/landing' | '/profile' | '/profilepage/$uuid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  InvitationsRoute: typeof InvitationsRoute
   LandingRoute: typeof LandingRoute
   ProfileRoute: typeof ProfileRoute
   ProfilepageUuidRoute: typeof ProfilepageUuidRoute
@@ -106,13 +85,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LandingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/invitations': {
-      id: '/invitations'
-      path: '/invitations'
-      fullPath: '/invitations'
-      preLoaderRoute: typeof InvitationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -132,7 +104,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  InvitationsRoute: InvitationsRoute,
   LandingRoute: LandingRoute,
   ProfileRoute: ProfileRoute,
   ProfilepageUuidRoute: ProfilepageUuidRoute,

@@ -55,6 +55,12 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-slate-600 mb-4">Profile not found</p>
+          <button
+            onClick={() => window.history.back()}
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
@@ -78,7 +84,21 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-slate-50">        
+      <div className="min-h-screen bg-slate-50">
+        {/* Header */}
+        <div className="sticky top-0 z-10 border-b border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <div className="max-w-4xl mx-auto flex items-center gap-3">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 text-slate-600 transition hover:text-slate-900 cursor-pointer"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              <span className="text-sm font-medium">Back</span>
+            </button>
+          </div>
+        </div>
+        
         {/* Invitations Modal */}
         {showInvitations && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
