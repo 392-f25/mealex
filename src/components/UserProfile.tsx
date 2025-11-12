@@ -83,6 +83,8 @@ const ProfileForm = ({
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
   const [availabilityInput, setAvailabilityInput] = useState<string>('');
+  const [mealPreferenceInput, setMealPreferenceInput] = useState<string>('');
+  const [isEditing, setIsEditing] = useState(isFirstTime);
 
   const {
     register,
