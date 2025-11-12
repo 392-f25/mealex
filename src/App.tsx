@@ -16,7 +16,16 @@ export default function App() {
   if (!profiles) return <h1>No user data found</h1>;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div 
+      className="min-h-screen bg-slate-50"
+      style={{
+        backgroundImage: 'url(/background.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       {/* Topbar */}
       <TopBar/>
 
@@ -34,7 +43,7 @@ export default function App() {
           {/* Main container */}
           <div className="mx-auto max-w-6xl px-5 py-7">
             {/* Intro section */}
-            <section className="mb-8">
+            <section className="mb-8 w-100 rounded-2xl bg-white border-r border-slate-200 p-5">
               <h2 className="m-0 text-2xl font-semibold">Browse profiles</h2>
               <p className="mt-1 text-slate-600">
                 Find peers by major, year, and interests.

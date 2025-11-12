@@ -1,15 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { type Profile } from '../types/Profile.ts';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  useAuthState,
-  useDataQuery,
-  useDataUpdate,
-} from '../utilities/firebase.ts';
-import { useProfiles } from '../contexts/ProfilesContext.tsx';
-import { type Message } from '../types/Message.ts';
 
 const currentYear = new Date().getFullYear();
 
@@ -216,8 +209,6 @@ const ProfileForm = ({
   };
 
   return (
-    <div className="flex gap-8 w-full max-w-6xl mx-auto">
-      {/* Left section - Profile Display/Form */}
       <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
         {!isEditing ? (
           // Static Profile Display
@@ -233,72 +224,76 @@ const ProfileForm = ({
             </div>
 
             {/* Profile Display */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Name
-                </h3>
-                <p className="text-gray-900">{profile.name}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Email
-                </h3>
-                <p className="text-gray-900">{profile.email}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Major
-                </h3>
-                <p className="text-gray-900">{profile.major}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Graduation Year
-                </h3>
-                <p className="text-gray-900">{profile.year}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Bio
-                </h3>
-                <p className="text-gray-900 leading-relaxed">{profile.bio}</p>
-              </div>
-
-              {profile.linkedinUrl && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                    LinkedIn
-                  </h3>
-                  <a
-                    href={
-                      profile.linkedinUrl.startsWith('http')
-                        ? profile.linkedinUrl
-                        : `https://${profile.linkedinUrl}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 transition"
-                  >
-                    {profile.linkedinUrl}
-                  </a>
+            <div className="space-y-8">
+              {/* Profile Photo and Name Section */}
+              <div className="flex items-start gap-6">
+                {/* Profile Photo */}
+                <div className="flex-shrink-0">
+                  {profile.photoUrl ? (
+                    <img
+                      src={profile.photoUrl}
+                      alt={`${profile.name}'s profile`}
+                      className="h-24 w-24 rounded-full object-cover border-2 border-slate-200"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    /* Fallback avatar */
+                    <div className="h-24 w-24 rounded-full bg-slate-200 flex items-center justify-center border-2 border-slate-300">
+                      <span className="text-2xl font-bold text-slate-500">
+                        {profile.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
 
+                {/* Name and Details */}
+                <div className="flex-1">
+                  <h1 className="text-4xl font-bold text-slate-900">{profile.name}</h1>
+                  <p className="mt-2 text-slate-600">
+                    {profile.major} • {profile.year}
+                  </p>
+                </div>
+              </div>
+
+              {/* Email Section */}
+              <div className="pb-8 border-b border-slate-200">
+                <h2 className="mb-3 text-sm font-semibold text-slate-700">Contact</h2>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-slate-900">{profile.email}</span>
+                  </div>
+
+                  {/* LinkedIn URL */}
+                  {profile.linkedinUrl && (
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={profile.linkedinUrl.startsWith('http') ? profile.linkedinUrl : `https://${profile.linkedinUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition font-medium"
+                      >
+                        View LinkedIn Profile
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* About Section */}
+              <div className="pb-8 border-b border-slate-200">
+                <h2 className="mb-3 text-sm font-semibold text-slate-700">About</h2>
+                <p className="text-slate-700 leading-relaxed">{profile.bio}</p>
+              </div>
+
+              {/* Interests Section */}
               {profile.interests && profile.interests.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                    Interests
-                  </h3>
+                <div className="pb-8 border-b border-slate-200">
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests</h2>
                   <div className="flex flex-wrap gap-2">
                     {profile.interests.map((interest) => (
                       <span
                         key={interest}
-                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                        className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 border border-blue-200"
                       >
                         {interest}
                       </span>
@@ -307,16 +302,17 @@ const ProfileForm = ({
                 </div>
               )}
 
+              {/* Meal Preference Section */}
               {profile.mealPreference && profile.mealPreference.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                    Meal Preferences
-                  </h3>
+                <div className="pb-8 border-b border-slate-200">
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                    Meal Preference
+                  </h2>
                   <div className="flex flex-wrap gap-2">
                     {profile.mealPreference.map((preference) => (
                       <span
                         key={preference}
-                        className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium"
+                        className="rounded-full bg-purple-50 px-3 py-1 text-sm font-medium text-purple-700 border border-purple-200"
                       >
                         {preference}
                       </span>
@@ -325,16 +321,15 @@ const ProfileForm = ({
                 </div>
               )}
 
+              {/* Availability Section */}
               {profile.availability && profile.availability.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                    Availability
-                  </h3>
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">Availability</h2>
                   <div className="flex flex-wrap gap-2">
                     {profile.availability.map((slot) => (
                       <span
                         key={slot}
-                        className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
+                        className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700 border border-green-200"
                       >
                         {slot}
                       </span>
@@ -648,7 +643,6 @@ const ProfileForm = ({
           </div>
         )}
       </div>
-    </div>
   );
 };
 

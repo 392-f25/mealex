@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useProfiles } from "../contexts/ProfilesContext";
-import { ArrowLeft, Copy, CheckCircle, MessageCircle, ExternalLink } from "lucide-react";
+import { Copy, CheckCircle, ExternalLink } from "lucide-react";
 import InvitationForm from "./InvitationForm";
-import { useAuthState, useDataQuery } from "../utilities/firebase";
+import { useAuthState } from "../utilities/firebase";
 
 interface ProfilePageProps {
   userID: string;
@@ -14,21 +14,6 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
   const { user } = useAuthState();
   const isOwnProfile = user && profile && user.uid === profile.id;
   const [copied, setCopied] = useState(false);
-  const [showInvitations, setShowInvitations] = useState(false);
-  const [invitations, setInvitations] = useState<any[]>([]);
-  
-  // Fetch invitations when needed
-  const [invitationData, isLoadingInvitations] = useDataQuery('/invitations');
-  
-  useEffect(() => {
-    if (!isLoadingInvitations && showInvitations && isOwnProfile && invitationData) {
-      const invitationsList = Object.entries(invitationData)
-        .map(([id, data]: [string, any]) => ({ ...data, id }))
-        .filter((invitation) => invitation.receiverId === userID)
-        .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-      setInvitations(invitationsList);
-    }
-  }, [showInvitations, userID, isOwnProfile, invitationData]);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -78,49 +63,17 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-slate-50">        
-        {/* Invitations Modal */}
-        {showInvitations && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Your Invitations</h2>
-                <button
-                  onClick={() => setShowInvitations(false)}
-                  className="text-slate-500 hover:text-slate-700"
-                >
-                  ×
-                </button>
-              </div>
-              {invitations.length > 0 ? (
-                <div className="space-y-4">
-                  {invitations.map((invitation) => (
-                    <div
-                      key={invitation.id}
-                      className="border border-slate-200 rounded-lg p-4"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-medium">{invitation.meal}</h3>
-                        <span className="text-sm text-slate-500">
-                          {new Date(invitation.timestamp).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-slate-700 mb-2">{invitation.message}</p>
-                      <div className="text-sm text-slate-500">
-                        From: {getProfileById(invitation.senderId)?.name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-slate-600 text-center py-8">
-                  No invitations yet
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
+      <div 
+        className="min-h-screen bg-slate-50"
+        style={{
+          backgroundImage: 'url(/background.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      >        
+        
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-5 py-12">
         {/* Profile Card */}
@@ -188,15 +141,6 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
                       </>
                     )}
                   </button>
-                  {isOwnProfile && (
-                    <button
-                      onClick={() => setShowInvitations(true)}
-                      className="flex items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100 cursor-pointer"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      View Invitations
-                    </button>
-                  )}
                 </div>
               </div>
 
