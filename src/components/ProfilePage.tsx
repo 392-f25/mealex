@@ -79,48 +79,7 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
   return (
     <>
       <div className="min-h-screen bg-slate-50">        
-        {/* Invitations Modal */}
-        {showInvitations && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Your Invitations</h2>
-                <button
-                  onClick={() => setShowInvitations(false)}
-                  className="text-slate-500 hover:text-slate-700"
-                >
-                  ×
-                </button>
-              </div>
-              {invitations.length > 0 ? (
-                <div className="space-y-4">
-                  {invitations.map((invitation) => (
-                    <div
-                      key={invitation.id}
-                      className="border border-slate-200 rounded-lg p-4"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-medium">{invitation.meal}</h3>
-                        <span className="text-sm text-slate-500">
-                          {new Date(invitation.timestamp).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-slate-700 mb-2">{invitation.message}</p>
-                      <div className="text-sm text-slate-500">
-                        From: {getProfileById(invitation.senderId)?.name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-slate-600 text-center py-8">
-                  No invitations yet
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
+        
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-5 py-12">
         {/* Profile Card */}

@@ -1,15 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { type Profile } from '../types/Profile.ts';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  useAuthState,
-  useDataQuery,
-  useDataUpdate,
-} from '../utilities/firebase.ts';
-import { useProfiles } from '../contexts/ProfilesContext.tsx';
-import { type Message } from '../types/Message.ts';
 
 const currentYear = new Date().getFullYear();
 
@@ -233,117 +226,7 @@ const ProfileForm = ({
             </div>
 
             {/* Profile Display */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Name
-                </h3>
-                <p className="text-gray-900">{profile.name}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Email
-                </h3>
-                <p className="text-gray-900">{profile.email}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Major
-                </h3>
-                <p className="text-gray-900">{profile.major}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Graduation Year
-                </h3>
-                <p className="text-gray-900">{profile.year}</p>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  Bio
-                </h3>
-                <p className="text-gray-900 leading-relaxed">{profile.bio}</p>
-              </div>
-
-              {profile.linkedinUrl && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                    LinkedIn
-                  </h3>
-                  <a
-                    href={
-                      profile.linkedinUrl.startsWith('http')
-                        ? profile.linkedinUrl
-                        : `https://${profile.linkedinUrl}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 transition"
-                  >
-                    {profile.linkedinUrl}
-                  </a>
-                </div>
-              )}
-
-              {profile.interests && profile.interests.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                    Interests
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.interests.map((interest) => (
-                      <span
-                        key={interest}
-                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
-                      >
-                        {interest}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {profile.mealPreference && profile.mealPreference.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                    Meal Preferences
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.mealPreference.map((preference) => (
-                      <span
-                        key={preference}
-                        className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium"
-                      >
-                        {preference}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {profile.availability && profile.availability.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                    Availability
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.availability.map((slot) => (
-                      <span
-                        key={slot}
-                        className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
-                      >
-                        {slot}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+            
         ) : (
           // Edit Form
           <div>
