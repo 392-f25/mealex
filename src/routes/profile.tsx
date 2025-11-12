@@ -81,7 +81,16 @@ function RouteComponent() {
   return (
     <StrictMode>
       <TopBar/>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4 py-8">
+      <div 
+        className="flex gap-8 w-full max-w-6xl mx-auto"
+        style={{
+          backgroundImage: 'url(/background.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed',
+          minHeight: '100vh'
+        }}>
         <ProfileForm
           profile={existingProfile || emptyProfile}
           onCancel={isFirstTime ? undefined : handleCancel}

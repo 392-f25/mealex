@@ -63,7 +63,16 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-slate-50">        
+      <div 
+        className="min-h-screen bg-slate-50"
+        style={{
+          backgroundImage: 'url(/background.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed'
+        }}
+      >        
         
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-5 py-12">

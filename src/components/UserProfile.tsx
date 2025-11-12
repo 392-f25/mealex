@@ -209,8 +209,6 @@ const ProfileForm = ({
   };
 
   return (
-    <div className="flex gap-8 w-full max-w-6xl mx-auto">
-      {/* Left section - Profile Display/Form */}
       <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
         {!isEditing ? (
           // Static Profile Display
@@ -226,7 +224,121 @@ const ProfileForm = ({
             </div>
 
             {/* Profile Display */}
-            
+            <div className="space-y-8">
+              {/* Profile Photo and Name Section */}
+              <div className="flex items-start gap-6">
+                {/* Profile Photo */}
+                <div className="flex-shrink-0">
+                  {profile.photoUrl ? (
+                    <img
+                      src={profile.photoUrl}
+                      alt={`${profile.name}'s profile`}
+                      className="h-24 w-24 rounded-full object-cover border-2 border-slate-200"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    /* Fallback avatar */
+                    <div className="h-24 w-24 rounded-full bg-slate-200 flex items-center justify-center border-2 border-slate-300">
+                      <span className="text-2xl font-bold text-slate-500">
+                        {profile.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Name and Details */}
+                <div className="flex-1">
+                  <h1 className="text-4xl font-bold text-slate-900">{profile.name}</h1>
+                  <p className="mt-2 text-slate-600">
+                    {profile.major} • {profile.year}
+                  </p>
+                </div>
+              </div>
+
+              {/* Email Section */}
+              <div className="pb-8 border-b border-slate-200">
+                <h2 className="mb-3 text-sm font-semibold text-slate-700">Contact</h2>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-slate-900">{profile.email}</span>
+                  </div>
+
+                  {/* LinkedIn URL */}
+                  {profile.linkedinUrl && (
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={profile.linkedinUrl.startsWith('http') ? profile.linkedinUrl : `https://${profile.linkedinUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition font-medium"
+                      >
+                        View LinkedIn Profile
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* About Section */}
+              <div className="pb-8 border-b border-slate-200">
+                <h2 className="mb-3 text-sm font-semibold text-slate-700">About</h2>
+                <p className="text-slate-700 leading-relaxed">{profile.bio}</p>
+              </div>
+
+              {/* Interests Section */}
+              {profile.interests && profile.interests.length > 0 && (
+                <div className="pb-8 border-b border-slate-200">
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.interests.map((interest) => (
+                      <span
+                        key={interest}
+                        className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 border border-blue-200"
+                      >
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Meal Preference Section */}
+              {profile.mealPreference && profile.mealPreference.length > 0 && (
+                <div className="pb-8 border-b border-slate-200">
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                    Meal Preference
+                  </h2>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.mealPreference.map((preference) => (
+                      <span
+                        key={preference}
+                        className="rounded-full bg-purple-50 px-3 py-1 text-sm font-medium text-purple-700 border border-purple-200"
+                      >
+                        {preference}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Availability Section */}
+              {profile.availability && profile.availability.length > 0 && (
+                <div>
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">Availability</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.availability.map((slot) => (
+                      <span
+                        key={slot}
+                        className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700 border border-green-200"
+                      >
+                        {slot}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         ) : (
           // Edit Form
           <div>
@@ -531,7 +643,6 @@ const ProfileForm = ({
           </div>
         )}
       </div>
-    </div>
   );
 };
 

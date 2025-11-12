@@ -20,7 +20,7 @@ const FilterSidebar = ({ setSelectedMajors, setSelectedYears, selectedMajors, se
   }
 
   return (
-    <aside className="w-70 bg-slate-50 border-r border-slate-200 p-5">
+    <aside className="w-70 h-screen bg-slate-50 border-r border-slate-200 p-5">
       <SearchBar selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
 
       <div className="mt-6">
