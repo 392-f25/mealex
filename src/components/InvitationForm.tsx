@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuthState } from '../utilities/firebase';
 import { useDataPush } from '../utilities/firebase';
 import { type Message } from '../types/Message';
+import { useNavigate } from '@tanstack/react-router';
 
 interface InvitationFormProps {
   receiverId: string;
@@ -12,6 +13,8 @@ export default function InvitationForm({ receiverId }: InvitationFormProps) {
   const [body, setBody] = useState('');
   const [sendInvitation, message, error] = useDataPush(`/invitations/${receiverId}/messages`);
   const [sent, setSent] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,13 +45,21 @@ export default function InvitationForm({ receiverId }: InvitationFormProps) {
         rows={3}
         required
       />
-      <button
-        type="submit"
-        className="rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700"
-        disabled={!body.trim() || sent}
-      >
-        {sent ? 'Sent!' : 'Send'}
-      </button>
+      <div className="flex justify-left gap-3 mt-6 pt-4 border-t border-gray-200">
+        <button
+          type="submit"
+          className="rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700"
+          disabled={!body.trim() || sent}
+        >
+          {sent ? 'Sent!' : 'Send'}
+        </button>
+        <button
+          className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium cursor-pointer hover:bg-gray-200 transition"
+          onClick={() => navigate({ to: '/'})}
+        >
+          Go Back
+        </button>
+      </div>
       {error && <div className="text-red-600 text-xs mt-2">{error.message}</div>}
       {message && <div className="text-green-600 text-xs mt-2">{message}</div>}
     </form>

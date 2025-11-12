@@ -43,11 +43,26 @@ const profileSchema = z.object({
     .array(z.string())
     .min(1, 'Add at least one interest')
     .max(5, 'Maximum 5 interests allowed'),
+  mealPreference: z
+    .array(z.string())
+    .min(1, 'Add at least one meal preference')
+    .max(5, 'Maximum 5 meal preferences allowed'),
   availability: z.array(z.string()).min(1, 'Add at least one availability'),
-  linkedinUrl: z.string().optional().or(z.literal('')).refine((val) => {
-    if (!val || val === '') return true;
-    return val.includes('linkedin.com') || val.startsWith('https://linkedin.com') || val.startsWith('https://www.linkedin.com');
-  }, { message: 'Please enter a valid LinkedIn URL' }),
+  linkedinUrl: z
+    .string()
+    .optional()
+    .or(z.literal(''))
+    .refine(
+      (val) => {
+        if (!val || val === '') return true;
+        return (
+          val.includes('linkedin.com') ||
+          val.startsWith('https://linkedin.com') ||
+          val.startsWith('https://www.linkedin.com')
+        );
+      },
+      { message: 'Please enter a valid LinkedIn URL' }
+    ),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -68,63 +83,8 @@ const ProfileForm = ({
   const [submitError, setSubmitError] = useState<string>('');
   const [tagInput, setTagInput] = useState<string>('');
   const [availabilityInput, setAvailabilityInput] = useState<string>('');
-  const [view, setView] = useState('incoming'); // 'incoming' or 'outgoing'
-
-  const { user } = useAuthState();
-  const { getProfileById } = useProfiles();
-
-  // Fetch incoming messages
-  const incomingQueryPath = user
-    ? `/invitations/${user.uid}/messages`
-    : 'no-user-path';
-  const [incomingMessagesData] = useDataQuery(incomingQueryPath);
-  const [incomingUserMessages, setIncomingUserMessages] = useState<Message[]>(
-    []
-  );
-
-  // hook to update incoming messages (we will update individual message status using relative paths)
-  const [updateIncomingMessages] = useDataUpdate(incomingQueryPath);
-
-  // Fetch all messages for outgoing filtering
-  const allMessagesQueryPath = '/invitations';
-  const [allMessagesData] = useDataQuery(allMessagesQueryPath);
-  const [outgoingUserMessages, setOutgoingUserMessages] = useState<Message[]>(
-    []
-  );
-
-  useEffect(() => {
-    if (user && incomingMessagesData) {
-      const messages = Object.entries(incomingMessagesData).map(
-        ([id, data]: [string, any]) => ({
-          id,
-          ...data,
-        })
-      );
-      setIncomingUserMessages(messages);
-    } else {
-      setIncomingUserMessages([]);
-    }
-  }, [user, incomingMessagesData]);
-
-  useEffect(() => {
-    if (user && allMessagesData) {
-      const allMessages: Message[] = [];
-      Object.values(allMessagesData).forEach((userMessages: any) => {
-        if (userMessages.messages) {
-          Object.entries(userMessages.messages).forEach(
-            ([id, data]: [string, any]) => {
-              allMessages.push({ id, ...data });
-            }
-          );
-        }
-      });
-
-      const outgoing = allMessages.filter((msg) => msg.sender === user.uid);
-      setOutgoingUserMessages(outgoing);
-    } else {
-      setOutgoingUserMessages([]);
-    }
-  }, [user, allMessagesData]);
+  const [mealPreferenceInput, setMealPreferenceInput] = useState<string>('');
+  const [isEditing, setIsEditing] = useState(isFirstTime);
 
   const {
     register,
@@ -142,6 +102,7 @@ const ProfileForm = ({
           year: String(profile.year),
           bio: profile.bio,
           interests: profile.interests || [],
+          mealPreference: profile.mealPreference || [],
           availability: profile.availability || [],
           linkedinUrl: profile.linkedinUrl || '',
         }
@@ -152,6 +113,7 @@ const ProfileForm = ({
 
   const interests = watch('interests');
   const availability = watch('availability');
+  const mealPreference = watch('mealPreference');
 
   const handleAddTag = () => {
     if (tagInput.trim() && !interests.includes(tagInput.trim())) {
@@ -206,12 +168,45 @@ const ProfileForm = ({
     }
   };
 
+  const handleAddMealPreference = () => {
+    if (
+      mealPreferenceInput.trim() &&
+      !mealPreference.includes(mealPreferenceInput.trim())
+    ) {
+      setValue('mealPreference', [...mealPreference, mealPreferenceInput.trim()], {
+        shouldDirty: true,
+      });
+      setMealPreferenceInput('');
+    }
+  };
+
+  const handleRemoveMealPreference = (preferenceToRemove: string) => {
+    setValue(
+      'mealPreference',
+      mealPreference.filter((pref) => pref !== preferenceToRemove),
+      { shouldDirty: true }
+    );
+  };
+
+  const handleMealPreferenceKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddMealPreference();
+    }
+  };
+
   const onFormSubmit = async (data: ProfileFormData) => {
     console.log('Form submitted: ', data);
     try {
       if (onSubmit) {
         // ProfileFormData now matches Profile type completely
         await onSubmit(data as Profile, isDirty);
+        // Switch back to display mode after successful save (unless it's first time)
+        if (!isFirstTime) {
+          setIsEditing(false);
+        }
       }
     } catch (error) {
       setSubmitError(
@@ -222,514 +217,435 @@ const ProfileForm = ({
 
   return (
     <div className="flex gap-8 w-full max-w-6xl mx-auto">
-      {/* Left section - Profile Form */}
+      {/* Left section - Profile Display/Form */}
       <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
-        <h2 className="text-2xl font-bold mb-2">
-          {isFirstTime ? 'Complete Your Profile' : 'Edit Your Profile'}
-        </h2>
-        {isFirstTime && (
-          <p className="text-sm text-slate-600 mb-6">
-            Tell us about yourself so other students can find you
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
-          {/* Hidden ID field */}
-          <input type="hidden" {...register('id')} />
-
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">
-              Full Name
-            </span>
-            <input
-              type="text"
-              {...register('name')}
-              className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-              placeholder="John Doe"
-            />
-            {errors.name && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.name.message}
-              </span>
-            )}
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">Email</span>
-            <input
-              type="email"
-              {...register('email')}
-              disabled
-              className="w-full rounded-lg border border-gray-300 bg-gray-100 p-3 mt-1 shadow-sm text-gray-600 cursor-not-allowed"
-              placeholder="your.email@university.edu"
-            />
-            <span className="text-xs text-gray-500 mt-1 block">
-              Email is pre-filled from your Google account
-            </span>
-            {errors.email && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.email.message}
-              </span>
-            )}
-          </label>
-
-        <label className="block">
-          <span className="text-sm font-semibold text-gray-700">LinkedIn Profile (Optional)</span>
-          <input
-            type="url"
-            {...register('linkedinUrl')}
-            className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-            placeholder="https://www.linkedin.com/in/your-profile"
-          />
-          <span className="text-xs text-gray-500 mt-1 block">
-            Add your LinkedIn profile to help others connect with you professionally
-          </span>
-          {errors.linkedinUrl && (
-            <span className="text-red-500 text-sm mt-1 block">
-              {errors.linkedinUrl.message}
-            </span>
-          )}
-        </label>
-
-        <label className="block">
-          <span className="text-sm font-semibold text-gray-700">Interests</span>
-          <div className="flex gap-2 mt-1">
-            <input
-              type="text"
-              {...register('major')}
-              className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-              placeholder="Computer Science"
-            />
-            {errors.major && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.major.message}
-              </span>
-            )}
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">
-              Graduation Year
-            </span>
-            <input
-              type="text"
-              {...register('year')}
-              className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-              placeholder={`e.g. ${currentYear} (or "Graduate")`}
-            />
-            {errors.year && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.year.message}
-              </span>
-            )}
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">Bio</span>
-            <textarea
-              {...register('bio')}
-              className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition resize-none"
-              placeholder="Tell us about yourself..."
-              rows={4}
-            />
-            {errors.bio && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.bio.message}
-              </span>
-            )}
-          </label>
-
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">
-              Interests
-            </span>
-            <div className="flex gap-2 mt-1">
-              <input
-                type="text"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-                placeholder="Type an interest and press Enter"
-              />
+        {!isEditing ? (
+          // Static Profile Display
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Your Profile</h2>
               <button
-                type="button"
-                onClick={handleAddTag}
-                className="px-4 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+                onClick={() => setIsEditing(true)}
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
               >
-                Add
+                Edit Profile
               </button>
             </div>
-            {errors.interests && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.interests.message}
-              </span>
-            )}
-            {interests.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {interests.map((tag) => (
-                  <div
-                    key={tag}
-                    className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(tag)}
-                      className="text-blue-600 hover:text-blue-800 font-bold"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </label>
 
-          <label className="block">
-            <span className="text-sm font-semibold text-gray-700">
-              Availability
-            </span>
-            <div className="flex gap-2 mt-1">
-              <input
-                type="text"
-                value={availabilityInput}
-                onChange={(e) => setAvailabilityInput(e.target.value)}
-                onKeyPress={handleAvailabilityKeyPress}
-                className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
-                placeholder="e.g. Monday 9-11 AM, Weekdays after 3 PM"
-              />
-              <button
-                type="button"
-                onClick={handleAddAvailability}
-                className="px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition"
-              >
-                Add
-              </button>
-            </div>
-            {errors.availability && (
-              <span className="text-red-500 text-sm mt-1 block">
-                {errors.availability.message}
-              </span>
-            )}
-            <div className="text-xs text-gray-500 mt-1">
-              Add time slots when you're available to connect with others
-            </div>
-            {availability.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {availability.map((slot) => (
-                  <div
-                    key={slot}
-                    className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium"
-                  >
-                    {slot}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveAvailability(slot)}
-                      className="text-green-600 hover:text-green-800 font-bold"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </label>
-
-          <div className="flex justify-left gap-3 mt-6 pt-4 border-t border-gray-200">
-            {onCancel && (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium cursor-pointer hover:bg-gray-200 transition"
-              >
-                Cancel
-              </button>
-            )}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium cursor-pointer hover:bg-blue-700 disabled:bg-gray-400 transition"
-            >
-              {isSubmitting
-                ? 'Saving...'
-                : isFirstTime
-                  ? 'Create Profile'
-                  : 'Save Changes'}
-            </button>
-          </div>
-        </form>
-
-        {submitError && (
-          <div className="mt-4 text-red-600 font-medium">{submitError}</div>
-        )}
-      </div>
-
-      {/* Right section - Messages */}
-      <div className="w-96 bg-white rounded-lg shadow-xl p-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Invitations</h2>
-          <div className="flex gap-2 p-1 bg-gray-200 rounded-lg">
-            <button
-              onClick={() => setView('incoming')}
-              className={`px-3 py-1 text-sm font-semibold rounded-md ${view === 'incoming' ? 'bg-white shadow' : 'text-gray-600'}`}
-            >
-              Incoming
-            </button>
-            <button
-              onClick={() => setView('outgoing')}
-              className={`px-3 py-1 text-sm font-semibold rounded-md ${view === 'outgoing' ? 'bg-white shadow' : 'text-gray-600'}`}
-            >
-              Outgoing
-            </button>
-          </div>
-        </div>
-
-        {view === 'incoming' && (
-          <>
-            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
-              {/* Pending Invitations */}
+            {/* Profile Display */}
+            <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                  Pending Invitations
+                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                  Name
                 </h3>
-                {incomingUserMessages.filter(
-                  (msg) => !msg.status || msg.status === 'pending'
-                ).length > 0 ? (
-                  <div className="space-y-2">
-                    {incomingUserMessages
-                      .filter((msg) => !msg.status || msg.status === 'pending')
-                      .map((msg) => {
-                        const senderProfile = getProfileById(msg.sender);
-                        return (
-                          <div
-                            key={msg.id}
-                            className="p-3 border rounded-lg hover:bg-gray-50"
-                          >
-                            <div>
-                              <p className="font-semibold text-sm">
-                                {senderProfile?.name ?? 'Unknown User'}
-                              </p>
-                              <p className="text-sm text-gray-700 mt-1">
-                                {msg.body ?? 'Wants to connect!'}
-                              </p>
-                              <p className="text-xs text-slate-500 mt-1">
-                                {msg.timestamp || 'No timestamp'}
-                              </p>
-                            </div>
-                            <div className="mt-3 flex gap-2">
-                              <button
-                                onClick={() => {
-                                  // update message status to accepted
-                                  updateIncomingMessages({
-                                    [`${msg.id}/status`]: 'accepted',
-                                  });
-                                  // optimistic UI update
-                                  setIncomingUserMessages((prev) =>
-                                    prev.map((m) =>
-                                      m.id === msg.id
-                                        ? { ...m, status: 'accepted' }
-                                        : m
-                                    )
-                                  );
-                                }}
-                                disabled={msg.status !== 'pending'}
-                                className={`px-2 py-1 text-xs rounded ${msg.status === 'accepted' ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-600'}`}
-                              >
-                                {msg.status === 'accepted'
-                                  ? 'Accepted'
-                                  : 'Accept'}
-                              </button>
-                              <button
-                                onClick={() => {
-                                  // update message status to rejected
-                                  updateIncomingMessages({
-                                    [`${msg.id}/status`]: 'rejected',
-                                  });
-                                  setIncomingUserMessages((prev) =>
-                                    prev.map((m) =>
-                                      m.id === msg.id
-                                        ? { ...m, status: 'rejected' }
-                                        : m
-                                    )
-                                  );
-                                }}
-                                disabled={msg.status !== 'pending'}
-                                className={`px-2 py-1 text-xs rounded ${msg.status === 'rejected' ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-red-500 text-white hover:bg-red-600'}`}
-                              >
-                                {msg.status === 'rejected'
-                                  ? 'Declined'
-                                  : 'Decline'}
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                ) : (
-                  <div className="text-sm text-slate-600">
-                    You have no pending invitations.
-                  </div>
-                )}
+                <p className="text-gray-900">{profile.name}</p>
               </div>
 
-              {/* Resolved Invitations */}
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                  Past Invitations
-                </h3>
-                {incomingUserMessages.filter(
-                  (msg) =>
-                    msg.status === 'accepted' || msg.status === 'rejected'
-                ).length > 0 ? (
-                  <div className="space-y-2">
-                    {incomingUserMessages
-                      .filter(
-                        (msg) =>
-                          msg.status === 'accepted' || msg.status === 'rejected'
-                      )
-                      .map((msg) => {
-                        const senderProfile = getProfileById(msg.sender);
-                        return (
-                          <div
-                            key={msg.id}
-                            className="p-3 border rounded-lg bg-gray-50"
-                          >
-                            <div>
-                              <p className="font-semibold text-sm">
-                                {senderProfile?.name ?? 'Unknown User'}
-                              </p>
-                              <p className="text-sm text-gray-700 mt-1">
-                                {msg.body ?? 'Wanted to connect!'}
-                              </p>
-                              <p className="text-xs text-slate-500 mt-1">
-                                {msg.timestamp || 'No timestamp'}
-                              </p>
-                              <p
-                                className={`text-sm mt-2 ${msg.status === 'accepted' ? 'text-green-600' : 'text-red-600'}`}
-                              >
-                                {msg.status === 'accepted'
-                                  ? 'Accepted'
-                                  : 'Declined'}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                ) : (
-                  <div className="text-sm text-slate-600">
-                    No past invitations.
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-
-        {view === 'outgoing' && (
-          <>
-            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
-              {/* Pending Outgoing Invitations */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                  Pending Invitations
+                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                  Email
                 </h3>
-                {outgoingUserMessages.filter(
-                  (msg) => !msg.status || msg.status === 'pending'
-                ).length > 0 ? (
-                  <div className="space-y-2">
-                    {outgoingUserMessages
-                      .filter((msg) => !msg.status || msg.status === 'pending')
-                      .map((msg) => {
-                        const receiverProfile = getProfileById(msg.receiver);
-                        return (
-                          <div
-                            key={msg.id}
-                            className="p-3 border rounded-lg hover:bg-gray-50"
-                          >
-                            <div>
-                              <p className="font-semibold text-sm">
-                                To: {receiverProfile?.name ?? 'Unknown User'}
-                              </p>
-                              <p className="text-sm text-gray-700 mt-1">
-                                {msg.body ?? 'Wanted to connect!'}
-                              </p>
-                              <p className="text-xs text-slate-500 mt-1">
-                                {msg.timestamp || 'No timestamp'}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                Status: Pending
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                ) : (
-                  <div className="text-sm text-slate-600">
-                    You have no pending outgoing invitations.
-                  </div>
-                )}
+                <p className="text-gray-900">{profile.email}</p>
               </div>
 
-              {/* Resolved Outgoing Invitations */}
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                  Past Invitations
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                  Major
                 </h3>
-                {outgoingUserMessages.filter(
-                  (msg) =>
-                    msg.status === 'accepted' || msg.status === 'rejected'
-                ).length > 0 ? (
-                  <div className="space-y-2">
-                    {outgoingUserMessages
-                      .filter(
-                        (msg) =>
-                          msg.status === 'accepted' || msg.status === 'rejected'
-                      )
-                      .map((msg) => {
-                        const receiverProfile = getProfileById(msg.receiver);
-                        return (
-                          <div
-                            key={msg.id}
-                            className="p-3 border rounded-lg bg-gray-50"
-                          >
-                            <div>
-                              <p className="font-semibold text-sm">
-                                To: {receiverProfile?.name ?? 'Unknown User'}
-                              </p>
-                              <p className="text-sm text-gray-700 mt-1">
-                                {msg.body ?? 'Wanted to connect!'}
-                              </p>
-                              <p className="text-xs text-slate-500 mt-1">
-                                {msg.timestamp || 'No timestamp'}
-                              </p>
-                              <p
-                                className={`text-xs mt-1 ${
-                                  msg.status === 'accepted'
-                                    ? 'text-green-600'
-                                    : 'text-red-600'
-                                }`}
-                              >
-                                Status:{' '}
-                                {msg.status === 'accepted'
-                                  ? 'Accepted'
-                                  : 'Declined'}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
+                <p className="text-gray-900">{profile.major}</p>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                  Graduation Year
+                </h3>
+                <p className="text-gray-900">{profile.year}</p>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                  Bio
+                </h3>
+                <p className="text-gray-900 leading-relaxed">{profile.bio}</p>
+              </div>
+
+              {profile.linkedinUrl && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                    LinkedIn
+                  </h3>
+                  <a
+                    href={
+                      profile.linkedinUrl.startsWith('http')
+                        ? profile.linkedinUrl
+                        : `https://${profile.linkedinUrl}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 transition"
+                  >
+                    {profile.linkedinUrl}
+                  </a>
+                </div>
+              )}
+
+              {profile.interests && profile.interests.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                    Interests
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.interests.map((interest) => (
+                      <span
+                        key={interest}
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                      >
+                        {interest}
+                      </span>
+                    ))}
                   </div>
-                ) : (
-                  <div className="text-sm text-slate-600">
-                    No past outgoing invitations.
+                </div>
+              )}
+
+              {profile.mealPreference && profile.mealPreference.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                    Meal Preferences
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.mealPreference.map((preference) => (
+                      <span
+                        key={preference}
+                        className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium"
+                      >
+                        {preference}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {profile.availability && profile.availability.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                    Availability
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.availability.map((slot) => (
+                      <span
+                        key={slot}
+                        className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
+                      >
+                        {slot}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          // Edit Form
+          <div>
+            <h2 className="text-2xl font-bold mb-2">
+              {isFirstTime ? 'Complete Your Profile' : 'Edit Your Profile'}
+            </h2>
+            {isFirstTime && (
+              <p className="text-sm text-slate-600 mb-6">
+                Tell us about yourself so other students can find you
+              </p>
+            )}
+
+            <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
+              {/* Hidden ID field */}
+              <input type="hidden" {...register('id')} />
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Full Name
+                </span>
+                <input
+                  type="text"
+                  {...register('name')}
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                  placeholder="John Doe"
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.name.message}
+                  </span>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Email
+                </span>
+                <input
+                  type="email"
+                  {...register('email')}
+                  disabled
+                  className="w-full rounded-lg border border-gray-300 bg-gray-100 p-3 mt-1 shadow-sm text-gray-600 cursor-not-allowed"
+                  placeholder="your.email@university.edu"
+                />
+                <span className="text-xs text-gray-500 mt-1 block">
+                  Email is pre-filled from your Google account
+                </span>
+                {errors.email && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.email.message}
+                  </span>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  LinkedIn Profile (Optional)
+                </span>
+                <input
+                  type="url"
+                  {...register('linkedinUrl')}
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                  placeholder="https://www.linkedin.com/in/your-profile"
+                />
+                <span className="text-xs text-gray-500 mt-1 block">
+                  Add your LinkedIn profile to help others connect with you
+                  professionally
+                </span>
+                {errors.linkedinUrl && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.linkedinUrl.message}
+                  </span>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Interests
+                </span>
+                <input
+                  type="text"
+                  {...register('major')}
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                  placeholder="Computer Science"
+                />
+                {errors.major && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.major.message}
+                  </span>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Graduation Year
+                </span>
+                <input
+                  type="text"
+                  {...register('year')}
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                  placeholder={`e.g. ${currentYear} (or "Graduate")`}
+                />
+                {errors.year && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.year.message}
+                  </span>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">Bio</span>
+                <textarea
+                  {...register('bio')}
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3 mt-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition resize-none"
+                  placeholder="Tell us about yourself..."
+                  rows={4}
+                />
+                {errors.bio && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.bio.message}
+                  </span>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Interests
+                </span>
+                <div className="flex gap-2 mt-1">
+                  <input
+                    type="text"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                    placeholder="Type an interest and press Enter"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTag}
+                    className="px-4 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+                  >
+                    Add
+                  </button>
+                </div>
+                {errors.interests && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.interests.message}
+                  </span>
+                )}
+                {interests.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {interests.map((tag) => (
+                      <div
+                        key={tag}
+                        className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium"
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTag(tag)}
+                          className="text-blue-600 hover:text-blue-800 font-bold"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Meal Preferences
+                </span>
+                <div className="flex gap-2 mt-1">
+                  <input
+                    type="text"
+                    value={mealPreferenceInput}
+                    onChange={(e) => setMealPreferenceInput(e.target.value)}
+                    onKeyPress={handleMealPreferenceKeyPress}
+                    className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                    placeholder="e.g. Vegetarian, Vegan, Halal, Kosher"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddMealPreference}
+                    className="px-4 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600 transition"
+                  >
+                    Add
+                  </button>
+                </div>
+                {errors.mealPreference && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.mealPreference.message}
+                  </span>
+                )}
+                <div className="text-xs text-gray-500 mt-1">
+                  Add your dietary preferences or restrictions
+                </div>
+                {mealPreference.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {mealPreference.map((preference) => (
+                      <div
+                        key={preference}
+                        className="flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium"
+                      >
+                        {preference}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveMealPreference(preference)}
+                          className="text-orange-600 hover:text-orange-800 font-bold"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </label>
+
+              <label className="block">
+                <span className="text-sm font-semibold text-gray-700">
+                  Availability
+                </span>
+                <div className="flex gap-2 mt-1">
+                  <input
+                    type="text"
+                    value={availabilityInput}
+                    onChange={(e) => setAvailabilityInput(e.target.value)}
+                    onKeyPress={handleAvailabilityKeyPress}
+                    className="flex-1 rounded-lg border border-gray-300 bg-white p-3 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                    placeholder="e.g. Monday 9-11 AM, Weekdays after 3 PM"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddAvailability}
+                    className="px-4 py-2 rounded-lg bg-green-500 text-white font-medium hover:bg-green-600 transition"
+                  >
+                    Add
+                  </button>
+                </div>
+                {errors.availability && (
+                  <span className="text-red-500 text-sm mt-1 block">
+                    {errors.availability.message}
+                  </span>
+                )}
+                <div className="text-xs text-gray-500 mt-1">
+                  Add time slots when you're available to connect with others
+                </div>
+                {availability.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {availability.map((slot) => (
+                      <div
+                        key={slot}
+                        className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium"
+                      >
+                        {slot}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAvailability(slot)}
+                          className="text-green-600 hover:text-green-800 font-bold"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </label>
+
+              <div className="flex justify-left gap-3 mt-6 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(false);
+                    if (onCancel && isFirstTime) {
+                      onCancel();
+                    }
+                  }}
+                  className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium cursor-pointer hover:bg-gray-200 transition"
+                >
+                  {isFirstTime ? 'Cancel' : 'Cancel Edit'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white font-medium cursor-pointer hover:bg-blue-700 disabled:bg-gray-400 transition"
+                >
+                  {isSubmitting
+                    ? 'Saving...'
+                    : isFirstTime
+                      ? 'Create Profile'
+                      : 'Save Changes'}
+                </button>
               </div>
-            </div>
-          </>
+            </form>
+
+            {submitError && (
+              <div className="mt-4 text-red-600 font-medium">{submitError}</div>
+            )}
+          </div>
         )}
       </div>
     </div>
