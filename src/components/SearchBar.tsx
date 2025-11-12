@@ -33,7 +33,7 @@ export default function SearchBar({ selectedTags, setSelectedTags, placeholder =
 
   return (
     <div>
-      <label className="text-sm font-semibold text-slate-700">Tags</label>
+      <label className="text-sm font-semibold text-slate-700">Interests & Experiences</label>
       <div className="mt-3 flex">
         <input
           value={input}

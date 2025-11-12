@@ -34,8 +34,8 @@ const profileSchema = z.object({
     .max(500, 'Bio must be less than 500 characters'),
   interests: z
     .array(z.string())
-    .min(1, 'Add at least one interest')
-    .max(5, 'Maximum 5 interests allowed'),
+    .min(1, 'Add at least one interest or experience')
+    .max(10, 'Maximum 10 interests/experiences allowed'),
   mealPreference: z
     .array(z.string())
     .min(1, 'Add at least one meal preference')
@@ -288,7 +288,7 @@ const ProfileForm = ({
               {/* Interests Section */}
               {profile.interests && profile.interests.length > 0 && (
                 <div className="pb-8 border-b border-slate-200">
-                  <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests</h2>
+                  <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests & Experiences</h2>
                   <div className="flex flex-wrap gap-2">
                     {profile.interests.map((interest) => (
                       <span
@@ -416,7 +416,7 @@ const ProfileForm = ({
 
               <label className="block">
                 <span className="text-sm font-semibold text-gray-700">
-                  Interests
+                  Major
                 </span>
                 <input
                   type="text"

@@ -170,7 +170,7 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
           {/* Interests Section */}
           {profile.interests && profile.interests.length > 0 && (
             <div className="mb-8 pb-8 border-b border-slate-200">
-              <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests</h2>
+              <h2 className="mb-3 text-sm font-semibold text-slate-700">Interests & Experience</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.interests.map((interest) => (
                   <span
