@@ -5,6 +5,7 @@ import { useAuthState } from '../utilities/firebase';
 import { useProfiles } from '../contexts/ProfilesContext';
 import { getDatabase, ref, set } from 'firebase/database';
 import { StrictMode } from 'react';
+import TopBar from '../components/TopBar.tsx';
 
 export const Route = createFileRoute('/profile')({
   component: RouteComponent,
@@ -79,6 +80,7 @@ function RouteComponent() {
 
   return (
     <StrictMode>
+      <TopBar/>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4 py-8">
         <ProfileForm
           profile={existingProfile || emptyProfile}
