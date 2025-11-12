@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useProfiles } from "../contexts/ProfilesContext";
-import { ArrowLeft, Copy, CheckCircle, MessageCircle, ExternalLink } from "lucide-react";
+import { Copy, CheckCircle, ExternalLink } from "lucide-react";
 import InvitationForm from "./InvitationForm";
-import { useAuthState, useDataQuery } from "../utilities/firebase";
+import { useAuthState } from "../utilities/firebase";
 
 interface ProfilePageProps {
   userID: string;
@@ -14,21 +14,6 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
   const { user } = useAuthState();
   const isOwnProfile = user && profile && user.uid === profile.id;
   const [copied, setCopied] = useState(false);
-  const [showInvitations, setShowInvitations] = useState(false);
-  const [invitations, setInvitations] = useState<any[]>([]);
-  
-  // Fetch invitations when needed
-  const [invitationData, isLoadingInvitations] = useDataQuery('/invitations');
-  
-  useEffect(() => {
-    if (!isLoadingInvitations && showInvitations && isOwnProfile && invitationData) {
-      const invitationsList = Object.entries(invitationData)
-        .map(([id, data]: [string, any]) => ({ ...data, id }))
-        .filter((invitation) => invitation.receiverId === userID)
-        .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-      setInvitations(invitationsList);
-    }
-  }, [showInvitations, userID, isOwnProfile, invitationData]);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -147,15 +132,6 @@ export default function ProfilePage({ userID }: ProfilePageProps) {
                       </>
                     )}
                   </button>
-                  {isOwnProfile && (
-                    <button
-                      onClick={() => setShowInvitations(true)}
-                      className="flex items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100 cursor-pointer"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      View Invitations
-                    </button>
-                  )}
                 </div>
               </div>
 
